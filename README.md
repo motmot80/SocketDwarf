@@ -3,26 +3,26 @@ SocketDwarf
 
 SocketDwarf++ - A multiplatform HTML 5 peripherals adapter
 
-#Project target
+###Project target
 * Enable HTML 5 to support a wide range of peripherals
 * Support as many platforms as possible (win32, win64, linux, mac os...)
 * Loosly coupled plugin architecture
 * Stay as close to standards as possible
 * Publish every 3rd party peripherals api to JavaScript
 
-#Technologies used
+###Technologies used
 * websocket
 * C++ 11
 * JSON
 * JavaScript
 
-#Depending on
+###Depending on
 * mongoose
 * cppunit
 * cmake
 * stl
 
-#Roadmap
+###Roadmap
 * Support Oculus Rift head tracker
 * Support Oculus Rift settings
 * Support Razor Hydra input device
