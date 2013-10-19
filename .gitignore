@@ -1,0 +1,10 @@
+**/Debug/
+**/Release/
+**/Projects/
+
+**/CMakeFiles
+**/CMakeCache.txt
+**/cmake_install.cmake
+**/Makefile
+**/.project
+**/.cproject
