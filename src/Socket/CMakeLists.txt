@@ -23,10 +23,6 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 SET(projectName DwarfSocket)
 MESSAGE(STATUS "Creating " ${projectName} "...")
 
-# include dirs
-include_directories("../../../boost")
-include_directories("../../../boost_process")
-
 # static library directories
 cmake_policy(SET CMP0015 NEW)
 link_directories("../../../boost/stage/lib")
