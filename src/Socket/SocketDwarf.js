@@ -1,46 +1,58 @@
-function SocketDwarf(prot) {
-	
-	this.backendURI = "ws://localhost:8080";
-	this.binaryType = "arraybuffer";
-	this.websocket;
-	this.protocol = prot;
-	
-	this.doSend = function (message) {
-		this.websocket.send(message);	
+//
+//  SocketDwarf++ - A multiplatform HTML 5 peripherals adapter
+//  
+//  Copyright (C) 2013 Nico Thomaier
+//  
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//  
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//  
+
+function SocketDwarf(protocol) {
+    var that = this;
+	var backendURI = "ws://localhost:8080";
+	var websocket;
+	var protocolType = protocol;
+
+	this.sendMessage = function (message) {
+	    websocket.send(message);
 	}
 	
 	this.destroy = function () {	
-		this.websocket.close();
+	    websocket.close();
+	}
+    
+	this.init = function () {
+	    console.log("Connecting to '" + backendURI + "'...");
+	    websocket = new WebSocket(backendURI, protocolType);
+	    websocket.onopen = function (event) { that.onOpen(event) };
+	    websocket.onmessage = function (event) { that.onMessage(event) };
+	    websocket.onerror = function (event) { that.onError(event) };
+	    websocket.onclose = function (event) { that.onClose(event) };
 	}
 	
-	this.dataReceived = function (event) { 
-		console.log("Websocket received with protokoll '"  + protocol + "'");
+	this.onError = function () {
+	    console.log("Error on '" + backendURI + "'");
 	}
-	
+    
+	this.onOpen = function (event) {
+	    console.log("Connected to '" + backendURI + "'");
+	}
+
+	this.onClose = function (event) {
+	    console.log("Disconnected from '" + backendURI + "'");
+	}
 }
 
-SocketDwarf.prototype.init = function () {
-	var that = this;
-	console.log(that.backendURI);
-	this.websocket = new WebSocket(that.backendURI);		
-	this.websocket.binaryType = that.binaryType;
-	this.websocket.onopen = function(event) { that.onOpen(event) };
-	this.websocket.onmessage = function(event) { that.dataReceived( event ) };
-	this.websocket.onerror = function(event) { that.onError(event) };
-	this.websocket.onclose = function(event) { that.onClose(event) };
-}
-
-SocketDwarf.prototype.onError = function () {
-	var that = this;
-	console.log("Error on Websocket with protocol '" + that.protocol + "'");
-}
-
-SocketDwarf.prototype.onClose = function (event) {
-	var that = this;
-	console.log("Websocket for protocol'"  + that.protocol + "' was closed");
-}
-
-SocketDwarf.prototype.onOpen = function (event) {
-	var that = this;
-	console.log("Websocket opened with protokoll '"  + that.protocol + "'");
+SocketDwarf.prototype.onMessage = function (event) {
+    console.log("Data received from '" + protocolType + "'");
 }

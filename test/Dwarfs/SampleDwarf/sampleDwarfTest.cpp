@@ -30,8 +30,8 @@ void SampleDwarfTestFixture::DwarfStartable()
 {
 	Helper::Library lib ("SampleDwarf");
     Helper::Function<const std::string (const std::string &)> echoFunction(lib, "ProcessRequest");
-    const std::string responseData = echoFunction("{\"command\": \"helloworld\"}");
-    CPPUNIT_ASSERT(responseData == "demo");
+    const std::string responseData = echoFunction("{\"command\": \"echo\", \"data\": \"hello world\"}");
+    CPPUNIT_ASSERT(responseData == "\n{\n\t\"data\" : \"hello world\"\n}\n");
 }
 
 void SampleDwarfTestFixture::setUp()

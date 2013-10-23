@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta charset="utf-8"> 
@@ -23,6 +23,27 @@
 </head>
 <body>
 	<h4>SampleDwarf Example</h4>
-    <script src="js/SampleDwarfExample.js"></script>
+    <script type="text/javascript">
+        
+    var dwarf;
+
+    function init(){
+        dwarf = new SampleDwarf();
+        dwarf.init();
+    }
+
+    window.onload = function () {
+        init();
+    }
+
+    /* Clean up when the site gets unloaded */
+    window.onclose = function (e) {
+        dwarf.destroy();
+    }
+
+    </script>
+    <label>Message:</label><input type="text" id="message" value="test message"/>
+    <input type="button" value="Echo" onclick="dwarf.echo(document.getElementById('message').value)" />
+    <label>Response:</label><input type="text" id="response" value=""/>
 </body>
 </html>

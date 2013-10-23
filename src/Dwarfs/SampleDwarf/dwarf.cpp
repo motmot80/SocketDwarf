@@ -22,11 +22,19 @@
 
 Export const std::string ProcessRequest (const std::string & data)
 {
-    Json::Value root;   
-    Json::Reader reader;
-    if (reader.parse(data, root)) {
-        std::string command = root.get("command", std::string()).asString();
-        return command;
+    Json::Value requestRoot;   
+    Json::Reader requestReader;
+    if (requestReader.parse(data, requestRoot)) {
+        std::string command = requestRoot.get("command", std::string()).asString();
+        if (command == "echo")
+        {
+            std::string data = requestRoot.get("data", std::string()).asString();
+            Json::Value responseRoot;
+            responseRoot["data"] = data;
+            std::ostringstream output;
+            output << responseRoot;
+            return output.str();
+        }        
     }
     return std::string();
 }

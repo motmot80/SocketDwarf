@@ -31,7 +31,6 @@ include_directories("../../../cppunit/include")
 
 # static library directories
 cmake_policy(SET CMP0015 NEW)
-link_directories("../../../boost/stage/lib")
 link_directories("../../../cppunit/lib")
 
 # preprocessor definitions

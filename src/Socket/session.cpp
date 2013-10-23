@@ -103,7 +103,7 @@ void SocketDwarf::Server::Session::OnDwarfDataReceived (const std::string & data
 */
 int SocketDwarf::Server::Session::OnClientDataReceived (const std::string & data)
 {
-    const Helper::Library * library = GetLibraryByName (Protocol);
+    const Helper::Library * library = GetLibraryByName (Protocol + "Dwarf");
     if (library != 0)
     {
         Helper::Function<const std::string (const std::string &)> processRequestFunc (* library, "ProcessRequest");
@@ -116,7 +116,7 @@ int SocketDwarf::Server::Session::OnClientDataReceived (const std::string & data
     else {
         std::cerr << "Could not load dwarf library '" << Protocol << "'";
     }
-    return WEBSOCKET_OPCODE_CONTINUATION;
+    return WEBSOCKET_OPCODE_TEXT;
 }
 
 /** 
