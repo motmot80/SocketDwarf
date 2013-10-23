@@ -17,20 +17,17 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  
 
-
 #include <string>
-
-#ifdef WIN32
-#include <Windows.h>
-#endif
-#ifdef WIN32
-#define Export extern "C" __declspec( dllexport )
-#else 
-#define Export extern "C" 
-#endif
+#include "../include/dwarf.hpp"
 
 Export const std::string ProcessRequest (const std::string & data)
 {
-    return data;
+    Json::Value root;   
+    Json::Reader reader;
+    if (reader.parse(data, root)) {
+        std::string command = root.get("command", std::string()).asString();
+        return command;
+    }
+    return std::string();
 }
 

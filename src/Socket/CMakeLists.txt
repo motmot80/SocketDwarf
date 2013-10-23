@@ -25,7 +25,6 @@ MESSAGE(STATUS "Creating " ${projectName} "...")
 
 # static library directories
 cmake_policy(SET CMP0015 NEW)
-link_directories("../../../boost/stage/lib")
 
 # preprocessor definitions
 add_definitions(-DUSE_WEBSOCKET)

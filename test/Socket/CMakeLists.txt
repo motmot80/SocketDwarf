@@ -26,8 +26,6 @@ MESSAGE(STATUS "Creating " ${projectName} "...")
 # The following line is very important.
 
 # include dirs
-include_directories("../../../boost")
-include_directories("../../../boost_process")
 include_directories("../../src/Socket")
 include_directories("../../../cppunit/include")
 

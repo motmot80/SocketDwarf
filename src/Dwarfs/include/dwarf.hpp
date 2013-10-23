@@ -17,29 +17,15 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  
 
+#pragma once
 
-#include <cppunit/config/SourcePrefix.h>
-#include "../../../src/Socket/library.hpp"
-#include "../../../src/Socket/function.hpp"
-#include "sampleDwarfTest.hpp"
+#include <json/json.h>
 
-
-CPPUNIT_TEST_SUITE_REGISTRATION(SampleDwarfTestFixture);
-
-void SampleDwarfTestFixture::DwarfStartable()
-{
-	Helper::Library lib ("SampleDwarf");
-    Helper::Function<const std::string (const std::string &)> echoFunction(lib, "ProcessRequest");
-    const std::string responseData = echoFunction("{\"command\": \"helloworld\"}");
-    CPPUNIT_ASSERT(responseData == "demo");
-}
-
-void SampleDwarfTestFixture::setUp()
-{
-
-}
-
-void SampleDwarfTestFixture::tearDown()
-{
-
-}
+#ifdef WIN32
+#include <Windows.h>
+#endif
+#ifdef WIN32
+#define Export extern "C" __declspec( dllexport )
+#else 
+#define Export extern "C" 
+#endif
