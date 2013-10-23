@@ -19,6 +19,7 @@ SocketDwarf++ - A multiplatform HTML 5 peripherals adapter
 ###Depending on
 * mongoose
 * cppunit
+* jsoncpp
 * cmake
 * stl
 
