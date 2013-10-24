@@ -28,8 +28,8 @@ cmake_policy(SET CMP0015 NEW)
 link_directories("../../../../jsoncpp/lib")
 include_directories("../../../../jsoncpp/include")
 
-link_directories("../../../../LibOVR/lib")
-include_directories("../../../../LibOVR/include")
+link_directories("../../../../OculusSDK/LibOVR/lib")
+include_directories("../../../../OculusSDK/LibOVR/include")
 
 
 target_link_libraries(${projectName})
