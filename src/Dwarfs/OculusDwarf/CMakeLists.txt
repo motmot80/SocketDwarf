@@ -28,8 +28,8 @@ cmake_policy(SET CMP0015 NEW)
 link_directories("../../../../jsoncpp/lib")
 include_directories("../../../../jsoncpp/include")
 
-link_directories("../../../../OculusSDK/LibOVR/lib")
-include_directories("../../../../OculusSDK/LibOVR/include")
+link_directories("../../../../OculusSDK/LibOVR/Lib")
+include_directories("../../../../OculusSDK/LibOVR/Include")
 
 
 target_link_libraries(${projectName})
@@ -41,7 +41,7 @@ set(LIBRARY_OUTPUT_PATH ../../../build/bin)
 #static library declarations
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	target_link_libraries(${projectName})
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux" json libovr)
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux" json ovr)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	target_link_libraries(${projectName} json.lib libovr.lib winmm.lib)
