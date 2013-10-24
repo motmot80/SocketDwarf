@@ -1,4 +1,14 @@
 ﻿<!DOCTYPE html>
+
+<!--
+// From: https://github.com/Instrument/oculus-bridge
+// 
+// Licensed by The MIT License (MIT)
+// Copyright (c) 2013 benpurdy
+// 
+-->
+
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta charset="utf-8"> 
@@ -88,8 +98,8 @@
       scene.add(floor);
 
 
-      var material = new THREE.MeshLambertMaterial({ color: 0x29d6e1, emissive:0x297d67});
-      referenceCube = new THREE.Mesh( new THREE.CubeGeometry(90, 60, 50), material);
+      var material = new THREE.MeshLambertMaterial({ color: 0xFFC000, emissive:0xFFC000});
+      referenceCube = new THREE.Mesh( new THREE.CubeGeometry(60, 60, 60), material);
 
       scene.add(referenceCube);
     }
