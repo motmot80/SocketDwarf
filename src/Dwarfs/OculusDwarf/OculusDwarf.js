@@ -17,28 +17,34 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  
 
-var echoTick = 0;
 
-function SampleDwarf() {
+//EARLY DRAFT
+
+function OculusDwarf() {
     
 }
 
-SocketDwarf.prototype.echo = function (message) {
-    echoTick = (new Date()).getTime();
-    console.log("message send '" + message + "'");
+OculusDwarf.prototype.getOrientation = function (callback) {
+    //TODO implement callback
     var data = {
-        "command": "echo",
-        "data": message
+        "command": "GetOrientation"
     };
     this.sendMessage(JSON.stringify(data));
 }
 
-SocketDwarf.prototype.onMessage = function (event) {
-    var that = this;
-    data = JSON.parse(event.data);
-    var message = data.data;
-    console.log("echo received '" + this.message + "' (" + ((new Date()).getTime() - echoTick) + " msec)");
-    this.echo(message);
+OculusDwarf.prototype.getInfo = function (callback) {
+    //TODO implement callback
+    var data = {
+        "command": "GetInfo"
+    };
+    this.sendMessage(JSON.stringify(data));
 }
 
-SampleDwarf.prototype = new SocketDwarf("Sample");
+OculusDwarf.prototype.onMessage = function (event) {
+    var that = this;
+    data = JSON.parse(event.data);
+    var message = data;
+    console.log("echo received '" + message);
+}
+
+OculusDwarf.prototype = new OculusDwarf("Oculus");

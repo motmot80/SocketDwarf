@@ -36,6 +36,7 @@ namespace Helper {
 #endif
                                 }
         operator Signature      *() {  return func; }
+                 bool           IsValid () { return func != 0; }
     private:
         Signature *             func;
     };   

@@ -19,6 +19,7 @@
 
 function SocketDwarf(protocol) {
     var that = this;
+    var autoReconnect = true;
 	var backendURI = "ws://localhost:8080";
 	var websocket;
 	var protocolType = protocol;
@@ -27,12 +28,14 @@ function SocketDwarf(protocol) {
 	    websocket.send(message);
 	}
 	
-	this.destroy = function () {	
+	this.destroy = function () {
+	    autoReconnect = false;
 	    websocket.close();
 	}
     
 	this.init = function () {
 	    console.log("Connecting to '" + backendURI + "'...");
+	    autoReconnect = true;
 	    websocket = new WebSocket(backendURI, protocolType);
 	    websocket.onopen = function (event) { that.onOpen(event) };
 	    websocket.onmessage = function (event) { that.onMessage(event) };
@@ -50,6 +53,9 @@ function SocketDwarf(protocol) {
 
 	this.onClose = function (event) {
 	    console.log("Disconnected from '" + backendURI + "'");
+	    if (autoReconnect) {
+	        init();
+	    }
 	}
 }
 

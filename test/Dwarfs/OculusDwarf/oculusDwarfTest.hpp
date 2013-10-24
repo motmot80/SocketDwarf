@@ -1,7 +1,7 @@
-﻿//
+//
 //  SocketDwarf++ - A multiplatform HTML 5 peripherals adapter
 //  
-//  Copyright (C) 2013 Nico Thomaier
+//  Copyright (C) 2013 Thomas Stollenwerk
 //  
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -17,28 +17,21 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  
 
-var echoTick = 0;
 
-function SampleDwarf() {
-    
-}
+#pragma once
 
-SocketDwarf.prototype.echo = function (message) {
-    echoTick = (new Date()).getTime();
-    console.log("message send '" + message + "'");
-    var data = {
-        "command": "echo",
-        "data": message
-    };
-    this.sendMessage(JSON.stringify(data));
-}
+#include <cppunit/extensions/HelperMacros.h>
+#include <string>
 
-SocketDwarf.prototype.onMessage = function (event) {
-    var that = this;
-    data = JSON.parse(event.data);
-    var message = data.data;
-    console.log("echo received '" + this.message + "' (" + ((new Date()).getTime() - echoTick) + " msec)");
-    this.echo(message);
-}
+class OculusDwarfTestFixture : public CPPUNIT_NS::TestFixture
+{
+  CPPUNIT_TEST_SUITE( OculusDwarfTestFixture );
+  CPPUNIT_TEST(OculusStartable);
+  CPPUNIT_TEST_SUITE_END();
 
-SampleDwarf.prototype = new SocketDwarf("Sample");
+public:
+  void setUp();
+  void tearDown();
+protected:
+  void OculusStartable();
+};

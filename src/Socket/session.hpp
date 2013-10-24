@@ -56,7 +56,7 @@ namespace SocketDwarf {
          virtual    void                                   OnDwarfDataReceived     (const std::string & data);
          virtual    int                                    OnClientDataReceived    (const std::string & data);
         private:
-         static     const Helper::Library *                GetLibraryByName        (const std::string & name);
+         static     const Helper::Library *                GetDwarfLibraryByName   (const std::string & name);
          static     LibraryMap                             Libraries;
                     const std::string                      Protocol;
                     mg_connection *                        ClientConnection;    

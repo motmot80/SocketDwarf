@@ -60,7 +60,18 @@ SocketDwarf::Server::Session::~ Session ()
 */
 void SocketDwarf::Server::Session::Start ()
 {
-
+    const Helper::Library * library = GetDwarfLibraryByName (Protocol);
+    if (library != 0)
+    {
+        //TODO: Transfer callback func for duplex communication
+        Helper::Function<void (const std::string &)> startFunc (* library, "Start");
+        if (startFunc.IsValid()) {
+            startFunc(GetSessionId());
+        }
+    }
+    else {
+        std::cerr << "Could not load dwarf library '" << Protocol << "'";
+    }
 }
 
 /** 
@@ -69,8 +80,17 @@ void SocketDwarf::Server::Session::Start ()
 void SocketDwarf::Server::Session::Stop ()
 {
     //Cannot close connection directly
-    std::unique_ptr<std::lock_guard<std::mutex>> lock_guard (new std::lock_guard<std::mutex> (* this));
-    lock_guard.reset(0);
+    const Helper::Library * library = GetDwarfLibraryByName (Protocol);
+    if (library != 0)
+    {
+        Helper::Function<void (const std::string &)> stopFunc (* library, "Stop");
+        if (stopFunc.IsValid()) {
+            stopFunc(GetSessionId());
+        }
+    }
+    else {
+        std::cerr << "Could not load dwarf library '" << Protocol << "'";
+    }
 }
 
 /** 
@@ -103,19 +123,20 @@ void SocketDwarf::Server::Session::OnDwarfDataReceived (const std::string & data
 */
 int SocketDwarf::Server::Session::OnClientDataReceived (const std::string & data)
 {
-    const std::string internalLibName = Protocol + "Dwarf";
-    const Helper::Library * library = GetLibraryByName (internalLibName);
+    const Helper::Library * library = GetDwarfLibraryByName (Protocol);
     if (library != 0)
     {
         Helper::Function<const std::string (const std::string &)> processRequestFunc (* library, "ProcessRequest");
-        std::string responseData = processRequestFunc(data);
-        if (!data.empty())
-        {
-            OnDwarfDataReceived (data);
+        if (processRequestFunc.IsValid()) {
+            std::string responseData = processRequestFunc(data);
+            if (!data.empty())
+            {
+                OnDwarfDataReceived (data);
+            }
         }
     }
     else {
-        std::cerr << "Could not load dwarf library '" << internalLibName << "'";
+        std::cerr << "Could not load dwarf library '" << Protocol << "'";
     }
     return WEBSOCKET_OPCODE_TEXT;
 }
@@ -124,21 +145,26 @@ int SocketDwarf::Server::Session::OnClientDataReceived (const std::string & data
     Returns a shared library by its name.
     Shared library is loaded if unknown.
 */
-const Helper::Library * SocketDwarf::Server::Session::GetLibraryByName (const std::string & name)
+const Helper::Library * SocketDwarf::Server::Session::GetDwarfLibraryByName (const std::string & name)
 {
+    const std::string internalName = name + "Dwarf";
     Helper::Library * libraryPtr = 0;
-    LibraryMap::const_iterator cit = Libraries.find(name);
+    LibraryMap::const_iterator cit = Libraries.find(internalName);
     if (cit != Libraries.end())
     {
         return cit->second.get ();
     }
     try {
-        libraryPtr = new Helper::Library(name);
+        libraryPtr = new Helper::Library(internalName);
+        Helper::Function<void ()> initFunc (* libraryPtr, "Init");
+        if (initFunc.IsValid()) {
+            initFunc();
+        }
     }
     catch (...) {
         return 0;
     }
-    Libraries.insert(Libraries.begin(), std::pair<std::string, std::unique_ptr<Helper::Library>> (name, std::unique_ptr<Helper::Library>(libraryPtr)));
+    Libraries.insert(Libraries.begin(), std::pair<std::string, std::unique_ptr<Helper::Library>> (internalName, std::unique_ptr<Helper::Library>(libraryPtr)));
     return libraryPtr;
 }
 
