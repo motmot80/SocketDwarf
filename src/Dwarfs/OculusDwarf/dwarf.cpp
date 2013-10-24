@@ -28,12 +28,10 @@ namespace {
     const char CONNECTED[]      = "connected";
     const char DATA[]           = "data";
 
-    OVR::Ptr<OVR::DeviceManager>	pManager;
-    OVR::Ptr<OVR::HMDDevice>		pHMD;
-    OVR::Ptr<OVR::SensorDevice>	    pSensor;
-    OVR::SensorFusion*		        pFusionResult;
-    OVR::HMDInfo			        Info;
-    bool			                InfoLoaded;
+    OVR::Ptr<OVR::DeviceManager>    pManager;
+    OVR::Ptr<OVR::HMDDevice>        pHMD;
+    OVR::Ptr<OVR::SensorDevice>     pSensor;
+    OVR::SensorFusion*              pFusionResult;
 
     const std::string GetOrientation()
     {
