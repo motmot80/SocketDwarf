@@ -21,30 +21,95 @@
 //EARLY DRAFT
 
 function OculusDwarf() {
-    
+    this.isDeviceConnected = false;
+    this.isContinuousOrientationUpdate = false;
+    this.deviceInfo = null;
+    this.orientation = null;
+    this.onGetOrientation = null;
+    this.onGetInfo = null;
+    this.onDeviceConnected = null;
+    this.onDeviceDisconnected = null;
 }
 
-OculusDwarf.prototype.getOrientation = function (callback) {
-    //TODO implement callback
+OculusDwarf.prototype = new SocketDwarf("Oculus");
+
+OculusDwarf.prototype.registerOrientation = function () {
+    console.log("registerOrientation");
+    this.isContinuousOrientationUpdate = true;
+    this.getOrientation();
+}
+
+OculusDwarf.prototype.unregisterOrientation = function () {
+    console.log("unregisterOrientation");
+    this.isContinuousOrientationUpdate = false;
+}
+
+OculusDwarf.prototype.getOrientation = function () {
+    console.log("getOrientation");
     var data = {
-        "command": "GetOrientation"
+        "uid": this.generateUid(),
+        "command": "GetOrientation"        
     };
     this.sendMessage(JSON.stringify(data));
 }
 
-OculusDwarf.prototype.getInfo = function (callback) {
-    //TODO implement callback
+OculusDwarf.prototype.getInfo = function () {
+    console.log("getInfo");
     var data = {
+        "uid": this.generateUid(),
         "command": "GetInfo"
     };
     this.sendMessage(JSON.stringify(data));
 }
 
+OculusDwarf.prototype.onError = function (event) {
+    console.log("onError");
+    if (onDeviceDisconnected != undefined) {
+        onDeviceDisconnected();
+    }
+    isDeviceConnected = false;
+}
+
+OculusDwarf.prototype.onOpen = function (event) {
+    if (this.isContinuousOrientationUpdate) {
+        console.log("Continue getOrientation");
+        getOrientation();
+    }
+}
+
 OculusDwarf.prototype.onMessage = function (event) {
     var that = this;
     data = JSON.parse(event.data);
-    var message = data;
-    console.log("echo received '" + message);
+    if (data.devicestate != undefined && data.devicestate.connected != undefined) {
+        if (this.isDeviceConnected && !data.devicestate.connected && this.onDeviceDisconnected != undefined) {
+            console.log("Device disconnected");
+            this.onDeviceDisconnected();
+        }
+        else if (!this.isDeviceConnected && data.devicestate.connected && this.onDeviceConnected != undefined) {
+            console.log("Device connected");
+            this.onDeviceConnected();
+            if (this.isContinuousOrientationUpdate) {
+                this.getOrientation();
+            }
+        }
+        this.isDeviceConnected = data.devicestate.connected;
+    }
+    if (data.data != undefined) {
+        if (data.command == "GetInfo") {
+            this.deviceInfo = data;
+            if (this.onGetInfo != undefined) {
+                this.onGetInfo(data);
+            }
+        }
+        else if (data.command == "GetOrientation") {
+            this.orientation = data;
+            if (this.onGetOrientation != undefined) {
+                this.onGetOrientation(data);
+            }
+            if (this.isContinuousOrientationUpdate) {
+                this.getOrientation();
+            }
+        }
+    }
 }
 
-OculusDwarf.prototype = new OculusDwarf("Oculus");

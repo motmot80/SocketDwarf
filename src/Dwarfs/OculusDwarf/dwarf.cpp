@@ -24,18 +24,36 @@
 #include "../include/dwarf.hpp"
 
 namespace {
-    const char DEVICESTATE[]    = "devicestate";
-    const char CONNECTED[]      = "connected";
-    const char DATA[]           = "data";
+    const char DEVICESTATE[]            = "devicestate";
+    const char CONNECTED[]              = "connected";
+    const char DATA[]                   = "data";
+    const char UID[]                    = "uid";
+    const char COMMAND[]                = "command";
+    const char COMMAND_GETINFO[]        = "GetInfo";
+    const char COMMAND_GETORIENTATION[] = "GetOrientation";
 
     OVR::Ptr<OVR::DeviceManager>    pManager;
     OVR::Ptr<OVR::HMDDevice>        pHMD;
     OVR::Ptr<OVR::SensorDevice>     pSensor;
     OVR::SensorFusion*              pFusionResult;
 
-    const std::string GetOrientation()
+    void CheckInitSensor ()
     {
+        if (!pSensor) {
+            pSensor = pHMD ? *pHMD->GetSensor() : *pManager->EnumerateDevices<OVR::SensorDevice>().CreateDevice();
+	        if (pSensor)
+	        {
+	           pFusionResult->AttachToSensor(pSensor);
+	        }
+        }
+    }
+
+    const std::string GetOrientation(int uid)
+    {
+        CheckInitSensor ();
         Json::Value responseRoot;
+        responseRoot[UID] = uid;
+        responseRoot[COMMAND] = COMMAND_GETORIENTATION;
         if (pHMD && pSensor) {
             OVR::Quatf quaternion = pFusionResult->GetOrientation();
 		    float yaw, pitch, roll;
@@ -53,13 +71,14 @@ namespace {
         return output.str();
     }
 
-    const std::string GetInfo ()
+    const std::string GetInfo (int uid)
     {
         Json::Value responseRoot;
         OVR::HMDInfo info;
+        responseRoot[UID] = uid;
+        responseRoot[COMMAND] = COMMAND_GETINFO;
         if (pHMD && pHMD->GetDeviceInfo(&info))
         {            
-            responseRoot[DEVICESTATE][CONNECTED] = true;
             responseRoot[DATA]["DisplayDeviceName"]       = info.DisplayDeviceName;
             responseRoot[DATA]["ProductName"]             = info.ProductName;
             responseRoot[DATA]["Manufacturer"]            = info.Manufacturer;
@@ -77,9 +96,6 @@ namespace {
             responseRoot[DATA]["DistortionK_2"]           = info.DistortionK[2];
             responseRoot[DATA]["DistortionK_3"]           = info.DistortionK[3];            
         }
-        else {
-            responseRoot[DEVICESTATE][CONNECTED] = false;
-        }
         std::ostringstream output;
         output << responseRoot;
         return output.str();
@@ -94,11 +110,7 @@ Export void Init ()
 	pManager = *OVR::DeviceManager::Create();
     if (pManager) {
         pHMD = *pManager->EnumerateDevices<OVR::HMDDevice>().CreateDevice();
-        pSensor = pHMD ? *pHMD->GetSensor() : *pManager->EnumerateDevices<OVR::SensorDevice>().CreateDevice();
-	    if (pSensor)
-	    {
-	       pFusionResult->AttachToSensor(pSensor);
-	    }
+        CheckInitSensor();
     }
 }
 
@@ -129,13 +141,17 @@ Export const std::string ProcessRequest (const std::string & data)
     Json::Reader requestReader;
     if (requestReader.parse(data, requestRoot)) {
         std::string command = requestRoot.get("command", std::string()).asString();
-        if (command == "GetOrientation")
+        int uid = requestRoot.get("uid", -1).asInt();
+        if (uid != -1) 
         {
-            return ::GetOrientation();
-        }
-        else if (command == "GetInfo")
-        {
-            return ::GetInfo();
+            if (command == COMMAND_GETORIENTATION)
+            {
+                return ::GetOrientation(uid);
+            }
+            else if (command == COMMAND_GETINFO)
+            {
+                return ::GetInfo(uid);
+            }
         }
     }
     return std::string();

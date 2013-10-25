@@ -24,6 +24,10 @@ function SocketDwarf(protocol) {
 	var websocket;
 	var protocolType = protocol;
 
+	this.generateUid = function (message) {
+	    return Math.floor(Math.random() * 1000000001);
+	}
+
 	this.sendMessage = function (message) {
 	    websocket.send(message);
 	}
@@ -37,28 +41,28 @@ function SocketDwarf(protocol) {
 	    console.log("Connecting to '" + backendURI + "'...");
 	    autoReconnect = true;
 	    websocket = new WebSocket(backendURI, protocolType);
-	    websocket.onopen = function (event) { that.onOpen(event) };
-	    websocket.onmessage = function (event) { that.onMessage(event) };
-	    websocket.onerror = function (event) { that.onError(event) };
-	    websocket.onclose = function (event) { that.onClose(event) };
+	    websocket.onopen = that.onOpen;
+	    websocket.onmessage = that.onMessage;
+	    websocket.onerror = that.onError;
+	    websocket.onclose = that.onClose;
 	}
 	
 	this.onError = function () {
 	    console.log("Error on '" + backendURI + "'");
 	}
     
-	this.onOpen = function (event) {
+	this.onOpen = function () {
 	    console.log("Connected to '" + backendURI + "'");
 	}
 
-	this.onClose = function (event) {
+	this.onClose = function () {
 	    console.log("Disconnected from '" + backendURI + "'");
 	    if (autoReconnect) {
-	        init();
+	        this.init();
 	    }
 	}
-}
 
-SocketDwarf.prototype.onMessage = function (event) {
-    console.log("Data received from '" + protocolType + "'");
+	this.onMessage = function (event) {
+	    console.log("Data received from '" + protocolType + "'");
+	}
 }

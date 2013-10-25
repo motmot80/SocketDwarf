@@ -15,9 +15,9 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <title>OculusDwarf Example</title>
-    <!--  script type="text/javascript" src="SocketDwarf.js"></script  -->
-    <script type="text/javascript" src="../src/Dwarfs/SampleDwarf/OculusDwarf.js"></script>
-    <script type="text/javascript" src="https://raw.github.com/mrdoob/three.js/master/build/three.min.js"></script>
+    <script type="text/javascript" src="../src/Socket/SocketDwarf.js"></script>
+    <script type="text/javascript" src="../src/Dwarfs/OculusDwarf/OculusDwarf.js"></script>
+    <script type="text/javascript" src="three.min.js"></script>
     
     <style>
 
@@ -126,6 +126,13 @@
       renderer.render(scene, camera);
     }
 
+    function onGetOrientation(data) {
+        console.log(data);
+    }
+
+    function onGetInfo(data) {
+        console.log(data);
+    }
 
     function init(){
 
@@ -135,14 +142,13 @@
     	initGeometry();
     	initLights();
 
-/*    	var sampleControler = new SampleDwarf();
-    	sampleControler.init();
-
-    	// Clean up when the site gets unloaded 
-    	window.onbeforeunload = function (e) {
-    		sampleControler.destroy();
-    	};
-*/
+    	var oculusDwarf = new OculusDwarf();
+    	oculusDwarf.onGetOrientation = onGetOrientation;
+    	oculusDwarf.onGetInfo = onGetInfo;
+    	oculusDwarf.init();
+    	oculusDwarf.getInfo();
+    	oculusDwarf.registerOrientation();
+    	
     }
 
 
