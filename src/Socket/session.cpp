@@ -129,9 +129,9 @@ int SocketDwarf::Server::Session::OnClientDataReceived (const std::string & data
         Helper::Function<const std::string (const std::string &)> processRequestFunc (* library, "ProcessRequest");
         if (processRequestFunc.IsValid()) {
             std::string responseData = processRequestFunc(data);
-            if (!data.empty())
+            if (!responseData.empty())
             {
-                OnDwarfDataReceived (data);
+                OnDwarfDataReceived (responseData);
             }
         }
     }
