@@ -31,9 +31,6 @@ include_directories("../../../../jsoncpp/include")
 link_directories("../../../../OculusSDK/LibOVR/Lib")
 include_directories("../../../../OculusSDK/LibOVR/Include")
 
-
-target_link_libraries(${projectName})
-
 # The following line is very important.
 add_library (${projectName} SHARED dwarf.cpp OculusDwarf.js)
 set(LIBRARY_OUTPUT_PATH ../../../build/bin)
@@ -46,4 +43,3 @@ ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	target_link_libraries(${projectName} json.lib libovr.lib winmm.lib)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-

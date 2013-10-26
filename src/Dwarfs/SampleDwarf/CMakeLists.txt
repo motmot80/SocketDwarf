@@ -28,8 +28,6 @@ cmake_policy(SET CMP0015 NEW)
 link_directories("../../../../jsoncpp/lib")
 include_directories("../../../../jsoncpp/include")
 
-target_link_libraries(${projectName})
-
 # The following line is very important.
 add_library (${projectName} SHARED dwarf.cpp SampleDwarf.js)
 set(LIBRARY_OUTPUT_PATH ../../../build/bin)
@@ -42,4 +40,3 @@ ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	target_link_libraries(${projectName} json.lib)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-
