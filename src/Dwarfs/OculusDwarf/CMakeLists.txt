@@ -40,8 +40,8 @@ set(LIBRARY_OUTPUT_PATH ../../../build/bin)
 
 #static library declarations
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	target_link_libraries(${projectName})
-ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux" json ovr)
+	target_link_libraries(${projectName} json ovr)
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	target_link_libraries(${projectName} json.lib libovr.lib winmm.lib)
