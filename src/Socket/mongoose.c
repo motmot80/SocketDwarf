@@ -3972,18 +3972,22 @@ static void send_websocket_handshake(struct mg_connection *conn) {
   static const char *magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
   char buf[100], sha[20], b64_sha[sizeof(sha) * 2];
   SHA1_CTX sha_ctx;
-
+  const char * sec_websocket_protocol = NULL;
+  
   mg_snprintf(conn, buf, sizeof(buf), "%s%s",
               mg_get_header(conn, "Sec-WebSocket-Key"), magic);
   SHA1Init(&sha_ctx);
   SHA1Update(&sha_ctx, (unsigned char *) buf, strlen(buf));
   SHA1Final((unsigned char *) sha, &sha_ctx);
-  base64_encode((unsigned char *) sha, sizeof(sha), b64_sha);
-  mg_printf(conn, "%s%s%s",
+  base64_encode((unsigned char *) sha, sizeof(sha), b64_sha);  
+  sec_websocket_protocol = mg_get_header(conn, "Sec-WebSocket-Protocol");
+  
+  mg_printf(conn, sec_websocket_protocol != NULL ? "%s%s%s%s%s%s" : "%s%s%s",
             "HTTP/1.1 101 Switching Protocols\r\n"
             "Upgrade: websocket\r\n"
             "Connection: Upgrade\r\n"
-            "Sec-WebSocket-Accept: ", b64_sha, "\r\n\r\n");
+            "Sec-WebSocket-Accept: ", b64_sha, "\r\n",
+            "Sec-WebSocket-Protocol: ", sec_websocket_protocol, "\r\n\r\n");
 }
 
 static void read_websocket(struct mg_connection *conn) {
