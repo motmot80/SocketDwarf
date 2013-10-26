@@ -40,6 +40,7 @@ namespace Helper {
     public:
                         Library (std::string const & name)
                         {
+                            libraryHandle = NULL;
 #ifdef WIN32
                             libraryHandle = ::LoadLibrary((name + std::string(".dll")).c_str());
 #else   
