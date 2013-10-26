@@ -78,7 +78,8 @@ namespace {
         responseRoot[UID] = uid;
         responseRoot[COMMAND] = COMMAND_GETINFO;
         if (pHMD && pHMD->GetDeviceInfo(&info))
-        {            
+        {         
+            responseRoot[DEVICESTATE][CONNECTED] = true;
             responseRoot[DATA]["DisplayDeviceName"]       = info.DisplayDeviceName;
             responseRoot[DATA]["ProductName"]             = info.ProductName;
             responseRoot[DATA]["Manufacturer"]            = info.Manufacturer;
@@ -96,6 +97,9 @@ namespace {
             responseRoot[DATA]["DistortionK_2"]           = info.DistortionK[2];
             responseRoot[DATA]["DistortionK_3"]           = info.DistortionK[3];            
         }
+        else {
+            responseRoot[DEVICESTATE][CONNECTED] = false;
+        }        
         std::ostringstream output;
         output << responseRoot;
         return output.str();

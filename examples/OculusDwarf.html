@@ -130,6 +130,16 @@
         console.log(data);
     }
 
+    function onDwarfConnected() {
+        console.log("OculusDwarf connected");
+        oculusDwarf.getInfo();
+    }
+
+    function onDwarfDisconnected() {
+        console.log("OculusDwarf disconnected. Try reinit...");
+        oculusDwarf.init();
+    }
+
     function onGetInfo(data) {
         console.log(data);
     }
@@ -142,12 +152,14 @@
     	initGeometry();
     	initLights();
 
-    	var oculusDwarf = new OculusDwarf();
-    	oculusDwarf.onGetOrientation = onGetOrientation;
-    	oculusDwarf.onGetInfo = onGetInfo;
+    	oculusDwarf = new OculusDwarf();
+    	oculusDwarf.onDwarfConnected = function () { onDwarfConnected(); }
+    	oculusDwarf.onDwarfDisconnected = function () { onDwarfDisconnected(); }
+    	oculusDwarf.onGetOrientation = function () { onGetOrientation(); }
+    	oculusDwarf.onGetInfo = function () { onGetInfo(); }
     	oculusDwarf.init();
-    	oculusDwarf.getInfo();
-    	oculusDwarf.registerOrientation();
+    	
+    	//oculusDwarf.registerOrientation();
     	
     }
 

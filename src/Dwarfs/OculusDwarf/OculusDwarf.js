@@ -20,32 +20,30 @@
 
 //EARLY DRAFT
 
-function OculusDwarf() {
-    this.isDeviceConnected = false;
-    this.isContinuousOrientationUpdate = false;
-    this.deviceInfo = null;
-    this.orientation = null;
-    this.onGetOrientation = null;
-    this.onGetInfo = null;
-    this.onDeviceConnected = null;
-    this.onDeviceDisconnected = null;
-}
-
 OculusDwarf.prototype = new SocketDwarf("Oculus");
 
-OculusDwarf.prototype.registerOrientation = function () {
-    console.log("registerOrientation");
-    this.isContinuousOrientationUpdate = true;
-    this.getOrientation();
+function OculusDwarf() {
+    var that = this;
 }
 
-OculusDwarf.prototype.unregisterOrientation = function () {
-    console.log("unregisterOrientation");
-    this.isContinuousOrientationUpdate = false;
-}
+OculusDwarf.prototype.isContinuousOrientationUpdate = false;
+
+OculusDwarf.prototype.onDwarfConnected = null;
+
+OculusDwarf.prototype.deviceInfo = null;
+
+OculusDwarf.prototype.orientation = null;
+
+OculusDwarf.prototype.onGetOrientation = null;
+
+OculusDwarf.prototype.onGetInfo = null;
+
+OculusDwarf.prototype.onDeviceConnected = null;
+
+OculusDwarf.prototype.onDeviceDisconnected = null;
 
 OculusDwarf.prototype.getOrientation = function () {
-    console.log("getOrientation");
+    console.log("OculusDwarf >> request: GetInfo");
     var data = {
         "uid": this.generateUid(),
         "command": "GetOrientation"        
@@ -54,7 +52,7 @@ OculusDwarf.prototype.getOrientation = function () {
 }
 
 OculusDwarf.prototype.getInfo = function () {
-    console.log("getInfo");
+    console.log("OculusDwarf >> request: GetInfo");
     var data = {
         "uid": this.generateUid(),
         "command": "GetInfo"
@@ -63,51 +61,55 @@ OculusDwarf.prototype.getInfo = function () {
 }
 
 OculusDwarf.prototype.onError = function (event) {
-    console.log("onError");
-    if (onDeviceDisconnected != undefined) {
-        onDeviceDisconnected();
-    }
-    isDeviceConnected = false;
+    this.isDwarfConnected = false;
 }
 
 OculusDwarf.prototype.onOpen = function (event) {
-    if (this.isContinuousOrientationUpdate) {
-        console.log("Continue getOrientation");
-        getOrientation();
+    if (this.onDwarfConnected != null) {
+        this.onDwarfConnected();
+    }
+}
+
+OculusDwarf.prototype.onClose = function (event) {
+    if (this.onDwarfDisconnected != null) {
+        this.onDwarfDisconnected();
     }
 }
 
 OculusDwarf.prototype.onMessage = function (event) {
     var that = this;
     data = JSON.parse(event.data);
-    if (data.devicestate != undefined && data.devicestate.connected != undefined) {
-        if (this.isDeviceConnected && !data.devicestate.connected && this.onDeviceDisconnected != undefined) {
-            console.log("Device disconnected");
+    if (data.devicestate != null && data.devicestate.connected != null) {
+        if (this.isDwarfConnected && !data.devicestate.connected && this.onDeviceDisconnected != null) {
+            console.log("OculusDwarf >> Device disconnected");
             this.onDeviceDisconnected();
         }
-        else if (!this.isDeviceConnected && data.devicestate.connected && this.onDeviceConnected != undefined) {
-            console.log("Device connected");
+        else if (!this.isDwarfConnected && data.devicestate.connected && this.onDeviceConnected != null) {
+            console.log("OculusDwarf >> Device connected");
             this.onDeviceConnected();
             if (this.isContinuousOrientationUpdate) {
                 this.getOrientation();
             }
         }
-        this.isDeviceConnected = data.devicestate.connected;
+        this.isDwarfConnected = data.devicestate.connected;
     }
-    if (data.data != undefined) {
-        if (data.command == "GetInfo") {
-            this.deviceInfo = data;
-            if (this.onGetInfo != undefined) {
-                this.onGetInfo(data);
+    if (data.command != null) {
+        console.log("OculusDwarf >> response: " + data.command);
+        if (data.data != null) {
+            if (data.command == "GetInfo") {
+                this.deviceInfo = data;
+                if (this.onGetInfo != null) {
+                    this.onGetInfo(data);
+                }
             }
-        }
-        else if (data.command == "GetOrientation") {
-            this.orientation = data;
-            if (this.onGetOrientation != undefined) {
-                this.onGetOrientation(data);
-            }
-            if (this.isContinuousOrientationUpdate) {
-                this.getOrientation();
+            else if (data.command == "GetOrientation") {
+                this.orientation = data;
+                if (this.onGetOrientation != null) {
+                    this.onGetOrientation(data);
+                }
+                if (this.isContinuousOrientationUpdate) {
+                    this.getOrientation();
+                }
             }
         }
     }

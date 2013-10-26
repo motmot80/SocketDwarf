@@ -19,7 +19,6 @@
 
 function SocketDwarf(protocol) {
     var that = this;
-    var autoReconnect = true;
 	var backendURI = "ws://localhost:8080";
 	var websocket;
 	var protocolType = protocol;
@@ -33,36 +32,45 @@ function SocketDwarf(protocol) {
 	}
 	
 	this.destroy = function () {
-	    autoReconnect = false;
 	    websocket.close();
 	}
     
 	this.init = function () {
-	    console.log("Connecting to '" + backendURI + "'...");
+	    var thot = this;
+	    console.log("SocketDwarf >> Connecting to '" + backendURI + "'...");
 	    autoReconnect = true;
 	    websocket = new WebSocket(backendURI, protocolType);
-	    websocket.onopen = that.onOpen;
-	    websocket.onmessage = that.onMessage;
-	    websocket.onerror = that.onError;
-	    websocket.onclose = that.onClose;
+	    websocket.onopen = function () {
+	        console.log("SocketDwarf >> Connected to '" + backendURI + "'");
+	        thot.onOpen();
+	    };
+	    websocket.onmessage = function (event) {
+	        console.log("SocketDwarf >> Data received from '" + protocolType + "'");
+	        thot.onMessage(event);
+	    }
+	    websocket.onerror = function () {
+	        console.log("SocketDwarf >> Error on '" + backendURI + "'");
+	        thot.onError();
+	    }
+	    websocket.onclose = function () {
+	        console.log("SocketDwarf >> Disconnected from '" + backendURI + "'");
+	        thot.onClose();
+	    }
 	}
 	
 	this.onError = function () {
-	    console.log("Error on '" + backendURI + "'");
+	    
 	}
     
 	this.onOpen = function () {
-	    console.log("Connected to '" + backendURI + "'");
+	    
 	}
 
 	this.onClose = function () {
-	    console.log("Disconnected from '" + backendURI + "'");
-	    if (autoReconnect) {
-	        this.init();
-	    }
+	    
 	}
 
 	this.onMessage = function (event) {
-	    console.log("Data received from '" + protocolType + "'");
+	    
 	}
 }
