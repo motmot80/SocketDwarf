@@ -25,8 +25,8 @@ MESSAGE(STATUS "Creating " ${projectName} "...")
 
 cmake_policy(SET CMP0015 NEW)
 
-link_directories("../../../../jsoncpp/lib")
-include_directories("../../../../jsoncpp/include")
+#link_directories("../../../../jsoncpp/lib")
+#include_directories("../../../../jsoncpp/include")
 
 link_directories("../../../../OculusSDK/LibOVR/Lib")
 include_directories("../../../../OculusSDK/LibOVR/Include")
@@ -37,7 +37,7 @@ set(LIBRARY_OUTPUT_PATH ../../../build/bin)
 
 #static library declarations
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	target_link_libraries(${projectName} json ovr)
+	target_link_libraries(${projectName} json ovr udev X11 Xinerama )
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
