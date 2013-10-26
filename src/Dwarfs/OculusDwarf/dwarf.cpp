@@ -73,6 +73,7 @@ namespace {
 
     const std::string GetInfo (int uid)
     {
+        CheckInitSensor ();
         Json::Value responseRoot;
         OVR::HMDInfo info;
         responseRoot[UID] = uid;

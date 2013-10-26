@@ -155,8 +155,8 @@
     	oculusDwarf = new OculusDwarf();
     	oculusDwarf.onDwarfConnected = function () { onDwarfConnected(); }
     	oculusDwarf.onDwarfDisconnected = function () { onDwarfDisconnected(); }
-    	oculusDwarf.onGetOrientation = function () { onGetOrientation(); }
-    	oculusDwarf.onGetInfo = function () { onGetInfo(); }
+    	oculusDwarf.onGetOrientation = function (data) { onGetOrientation(data); }
+    	oculusDwarf.onGetInfo = function (data) { onGetInfo(data); }
     	oculusDwarf.init();
     	
     	//oculusDwarf.registerOrientation();

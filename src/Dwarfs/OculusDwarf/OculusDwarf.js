@@ -26,8 +26,6 @@ function OculusDwarf() {
     var that = this;
 }
 
-OculusDwarf.prototype.isContinuousOrientationUpdate = false;
-
 OculusDwarf.prototype.onDwarfConnected = null;
 
 OculusDwarf.prototype.deviceInfo = null;
@@ -99,16 +97,13 @@ OculusDwarf.prototype.onMessage = function (event) {
             if (data.command == "GetInfo") {
                 this.deviceInfo = data;
                 if (this.onGetInfo != null) {
-                    this.onGetInfo(data);
+                    this.onGetInfo(data.data);
                 }
             }
             else if (data.command == "GetOrientation") {
                 this.orientation = data;
                 if (this.onGetOrientation != null) {
-                    this.onGetOrientation(data);
-                }
-                if (this.isContinuousOrientationUpdate) {
-                    this.getOrientation();
+                    this.onGetOrientation(data.data);
                 }
             }
         }
