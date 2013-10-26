@@ -115,10 +115,12 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-
     function animate() {
-      requestAnimationFrame(animate);
-      render();
+        if (oculusDwarf.isDwarfConnected) {
+            oculusDwarf.getOrientation();
+        }
+        requestAnimationFrame(animate);
+        render();
     }
 
 
@@ -128,6 +130,7 @@
 
     function onGetOrientation(data) {
         console.log(data);
+        referenceCube.quaternion.set(data.x, data.y, data.z, data.w);
     }
 
     function onDwarfConnected() {
@@ -158,8 +161,6 @@
     	oculusDwarf.onGetOrientation = function (data) { onGetOrientation(data); }
     	oculusDwarf.onGetInfo = function (data) { onGetInfo(data); }
     	oculusDwarf.init();
-    	
-    	//oculusDwarf.registerOrientation();
     	
     }
 

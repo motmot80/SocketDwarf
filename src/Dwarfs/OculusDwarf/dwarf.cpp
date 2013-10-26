@@ -56,12 +56,12 @@ namespace {
         responseRoot[COMMAND] = COMMAND_GETORIENTATION;
         if (pHMD && pSensor) {
             OVR::Quatf quaternion = pFusionResult->GetOrientation();
-		    float yaw, pitch, roll;
-		    quaternion.GetEulerAngles<OVR::Axis_Y, OVR::Axis_X, OVR::Axis_Z>(&yaw, &pitch, &roll);
             responseRoot[DEVICESTATE][CONNECTED] = true;
-            responseRoot[DATA]["yaw"] = yaw;
-            responseRoot[DATA]["pitch"] = pitch;
-            responseRoot[DATA]["roll"] = roll;
+            responseRoot[DATA]["w"] = quaternion.w;
+            responseRoot[DATA]["x"] = quaternion.x;
+            responseRoot[DATA]["y"] = quaternion.y;
+            responseRoot[DATA]["z"] = quaternion.z;
+
         }
         else {
             responseRoot[DEVICESTATE][CONNECTED] = false;

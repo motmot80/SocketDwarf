@@ -26,6 +26,8 @@ function OculusDwarf() {
     var that = this;
 }
 
+OculusDwarf.prototype.isDwarfConnected = false;
+
 OculusDwarf.prototype.onDwarfConnected = null;
 
 OculusDwarf.prototype.deviceInfo = null;
@@ -41,7 +43,7 @@ OculusDwarf.prototype.onDeviceConnected = null;
 OculusDwarf.prototype.onDeviceDisconnected = null;
 
 OculusDwarf.prototype.getOrientation = function () {
-    console.log("OculusDwarf >> request: GetInfo");
+    console.log("OculusDwarf >> request: GetOrientation");
     var data = {
         "uid": this.generateUid(),
         "command": "GetOrientation"        
@@ -85,9 +87,6 @@ OculusDwarf.prototype.onMessage = function (event) {
         else if (!this.isDwarfConnected && data.devicestate.connected && this.onDeviceConnected != null) {
             console.log("OculusDwarf >> Device connected");
             this.onDeviceConnected();
-            if (this.isContinuousOrientationUpdate) {
-                this.getOrientation();
-            }
         }
         this.isDwarfConnected = data.devicestate.connected;
     }
