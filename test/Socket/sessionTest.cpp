@@ -154,7 +154,7 @@ void SessionTestFixture::setUp()
     serverPort = 8080;
     requestData =   "GET / HTTP/1.1\n"
                     "Origin: null\n"
-                    "Sec-WebSocket-Protocol: SampleDwarf\n"
+                    "Sec-WebSocket-Protocol: Sample\n"
                     "Sec-WebSocket-Key: CJgV+uoBFwiAadsp6JsxJw==\n"
                     "Connection: Upgrade\n"
                     "Upgrade: Websocket\n"
