@@ -25,8 +25,8 @@ MESSAGE(STATUS "Creating " ${projectName} "...")
 
 cmake_policy(SET CMP0015 NEW)
 
-#link_directories("../../../../jsoncpp/lib")
-#include_directories("../../../../jsoncpp/include")
+link_directories("../../../../jsoncpp/lib")
+include_directories("../../../../jsoncpp/include")
 
 link_directories("../../../../OculusSDK/LibOVR/Lib")
 include_directories("../../../../OculusSDK/LibOVR/Include")
