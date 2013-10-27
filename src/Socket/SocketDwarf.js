@@ -22,6 +22,7 @@ function SocketDwarf(protocol) {
 	var backendURI = "ws://localhost:8080";
 	var websocket;
 	var protocolType = protocol;
+	this.isDebug = false;
 
 	this.generateUid = function (message) {
 	    return Math.floor(Math.random() * 1000000001);
@@ -37,23 +38,33 @@ function SocketDwarf(protocol) {
     
 	this.init = function () {
 	    var thot = this;
-	    console.log("SocketDwarf >> Connecting to '" + backendURI + "'...");
+	    if (thot.isDebug) {
+	        console.log("SocketDwarf >> Connecting to '" + backendURI + "'...");
+	    }
 	    autoReconnect = true;
 	    websocket = new WebSocket(backendURI, protocolType);
 	    websocket.onopen = function () {
-	        console.log("SocketDwarf >> Connected to '" + backendURI + "'");
+	        if (thot.isDebug) {
+	            console.log("SocketDwarf >> Connected to '" + backendURI + "'");
+	        }
 	        thot.onOpen();
 	    };
 	    websocket.onmessage = function (event) {
-	        console.log("SocketDwarf >> Data received from '" + protocolType + "'");
+	        if (thot.isDebug) {
+	            console.log("SocketDwarf >> Data received from '" + protocolType + "'");
+	        }
 	        thot.onMessage(event);
 	    }
 	    websocket.onerror = function () {
-	        console.log("SocketDwarf >> Error on '" + backendURI + "'");
+	        if (thot.isDebug) {
+	            console.log("SocketDwarf >> Error on '" + backendURI + "'");
+	        }
 	        thot.onError();
 	    }
 	    websocket.onclose = function () {
-	        console.log("SocketDwarf >> Disconnected from '" + backendURI + "'");
+	        if (thot.isDebug) {
+	            console.log("SocketDwarf >> Disconnected from '" + backendURI + "'");
+	        }
 	        thot.onClose();
 	    }
 	}

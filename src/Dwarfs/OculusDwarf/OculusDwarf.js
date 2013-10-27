@@ -18,13 +18,13 @@
 //  
 
 
-//EARLY DRAFT
-
 OculusDwarf.prototype = new SocketDwarf("Oculus");
 
 function OculusDwarf() {
     var that = this;
 }
+
+OculusDwarf.prototype.isDebug = false;
 
 OculusDwarf.prototype.isDwarfConnected = false;
 
@@ -43,7 +43,9 @@ OculusDwarf.prototype.onDeviceConnected = null;
 OculusDwarf.prototype.onDeviceDisconnected = null;
 
 OculusDwarf.prototype.getOrientation = function () {
-    console.log("OculusDwarf >> request: GetOrientation");
+    if (this.isDebug) {
+        console.log("OculusDwarf >> request: GetOrientation");
+    }
     var data = {
         "uid": this.generateUid(),
         "command": "GetOrientation"        
@@ -52,7 +54,9 @@ OculusDwarf.prototype.getOrientation = function () {
 }
 
 OculusDwarf.prototype.getInfo = function () {
-    console.log("OculusDwarf >> request: GetInfo");
+    if (this.isDebug) {
+        console.log("OculusDwarf >> request: GetInfo");
+    }
     var data = {
         "uid": this.generateUid(),
         "command": "GetInfo"
@@ -76,22 +80,40 @@ OculusDwarf.prototype.onClose = function (event) {
     }
 }
 
+window.performance = window.performance || {};
+performance.now = (function () {
+    return performance.now ||
+           performance.mozNow ||
+           performance.msNow ||
+           performance.oNow ||
+           performance.webkitNow ||
+           function () { return new Date().getTime(); };
+})();
+
 OculusDwarf.prototype.onMessage = function (event) {
     var that = this;
     data = JSON.parse(event.data);
     if (data.devicestate != null && data.devicestate.connected != null) {
         if (this.isDwarfConnected && !data.devicestate.connected && this.onDeviceDisconnected != null) {
-            console.log("OculusDwarf >> Device disconnected");
+            if (this.isDebug) {
+                console.log("OculusDwarf >> Device disconnected");
+            }
             this.onDeviceDisconnected();
         }
         else if (!this.isDwarfConnected && data.devicestate.connected && this.onDeviceConnected != null) {
-            console.log("OculusDwarf >> Device connected");
+            if (this.isDebug) {
+                console.log("OculusDwarf >> Device connected");
+            }
             this.onDeviceConnected();
         }
         this.isDwarfConnected = data.devicestate.connected;
     }
     if (data.command != null) {
-        console.log("OculusDwarf >> response: " + data.command);
+        if (this.isDebug) {
+            if (this.isDebug) {
+                console.log("OculusDwarf >> response: " + data.command);
+            }
+        }
         if (data.data != null) {
             if (data.command == "GetInfo") {
                 this.deviceInfo = data;
