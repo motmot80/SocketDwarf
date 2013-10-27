@@ -17,7 +17,7 @@
     <title>OculusDwarf Example</title>
     <script type="text/javascript" src="../src/Socket/SocketDwarf.js"></script>
     <script type="text/javascript" src="../src/Dwarfs/OculusDwarf/OculusDwarf.js"></script>
-    <script type="text/javascript" src="three.min.js"></script>
+    <script type="text/javascript" src="js/lib/three.min.js"></script>
     
     <style>
 
@@ -131,6 +131,7 @@
     function onGetOrientation(data) {
         console.log(data);
         referenceCube.quaternion.set(data.x, data.y, data.z, data.w);
+//        camera.quaternion.set(data.x, data.y, data.z, data.w);
     }
 
     function onDwarfConnected() {
