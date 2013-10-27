@@ -17,14 +17,10 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  
 
-#ifdef __linux__
-#include <string.h>
-#endif
-
 #define WIN32_LEAN_AND_MEAN
 
 #include <iostream>   
-
+#include <string.h>
 
 #include "server.hpp"
 
@@ -38,7 +34,7 @@ namespace {
 /**
     Default constructor
  */
-SocketDwarf::Server::DwarfServer::DwarfServer()
+SocketDwarf::Server::DwarfServer::DwarfServer(DwarfServerSettings const & settings) : settings (settings)
 {
     ctx = 0;
     memset(&callbacks, 0, sizeof(callbacks));
@@ -56,10 +52,12 @@ SocketDwarf::Server::DwarfServer::~ DwarfServer()
 /**
     Starts the server
  */
-void SocketDwarf::Server::DwarfServer::Start(int port)
+void SocketDwarf::Server::DwarfServer::Start()
 {
-    const char * options [] = { "listening_ports", "8080", "document_root", "websocket_html_root", NULL };
-        
+    const char * options [] = { "listening_ports", settings.ServerPort.c_str(), "document_root", settings.DocumentRoot.c_str(), NULL };
+    
+    Session::SetProbingPaths(settings.LibraryProbingPaths);
+
     callbacks.websocket_ready = OnClientConnectedS;
     callbacks.websocket_data = OnClientDataReceivedS;
     

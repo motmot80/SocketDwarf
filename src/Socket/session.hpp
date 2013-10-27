@@ -42,6 +42,7 @@ namespace SocketDwarf {
     namespace Server {
 
         typedef std::map<std::string, std::unique_ptr <Helper::Library>> LibraryMap;
+        typedef std::vector<std::string> LibraryProbingPathList;
 
         Export class Session : public std::mutex {
         public:
@@ -53,11 +54,13 @@ namespace SocketDwarf {
          static     const std::string                      GetSessionId            (mg_connection * conn);
                     const mg_connection *                  GetClientConnection     () const { return ClientConnection; }
                     mg_connection *                        GetClientConnection     () { return ClientConnection; }
+         static     void                                   SetProbingPaths         (std::vector<std::string> const & probingPaths);
          virtual    void                                   OnDwarfDataReceived     (const std::string & data);
          virtual    int                                    OnClientDataReceived    (const std::string & data);
         private:
          static     const Helper::Library *                GetDwarfLibraryByName   (const std::string & name);
          static     LibraryMap                             Libraries;
+         static     LibraryProbingPathList                 LibraryProbingPaths;
                     const std::string                      Protocol;
                     mg_connection *                        ClientConnection;    
         };        

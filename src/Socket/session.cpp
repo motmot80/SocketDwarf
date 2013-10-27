@@ -28,6 +28,15 @@
     All loaded shared libraries
 */
 SocketDwarf::Server::LibraryMap SocketDwarf::Server::Session::Libraries;
+SocketDwarf::Server::LibraryProbingPathList SocketDwarf::Server::Session::LibraryProbingPaths;
+
+/** 
+    Set probing paths for libraries
+*/
+void SocketDwarf::Server::Session::SetProbingPaths (std::vector<std::string> const & probingPaths)
+{
+    LibraryProbingPaths = probingPaths;
+}
 
 /** 
     Default constructor
@@ -155,7 +164,7 @@ const Helper::Library * SocketDwarf::Server::Session::GetDwarfLibraryByName (con
         return cit->second.get ();
     }
     try {
-        libraryPtr = new Helper::Library(internalName);
+        libraryPtr = new Helper::Library(internalName, LibraryProbingPaths);
         Helper::Function<void ()> initFunc (* libraryPtr, "Init");
         if (initFunc.IsValid()) {
             initFunc();

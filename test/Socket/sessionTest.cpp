@@ -60,8 +60,11 @@ WEBSOCKET DATAGRAM see http://tools.ietf.org/html/rfc6455#page-38
 
 void SessionTestFixture::ServerIsUp()
 {
-    std::unique_ptr<SocketDwarf::Server::DwarfServer> server (new SocketDwarf::Server::DwarfServer ());
-    server->Start(serverPort);
+    SocketDwarf::Server::DwarfServerSettings settings;
+    settings.ServerPort = 8080;
+    settings.LibraryProbingPaths.push_back("./");
+    std::unique_ptr<SocketDwarf::Server::DwarfServer> server (new SocketDwarf::Server::DwarfServer (settings));
+    server->Start();
     int thisSocket;
     struct sockaddr_in destination;
 	destination.sin_family = AF_INET;
@@ -81,8 +84,11 @@ void SessionTestFixture::ServerIsUp()
 
 void SessionTestFixture::ServerIsRespondingWithWebSocket()
 {
-    std::unique_ptr<SocketDwarf::Server::DwarfServer> server (new SocketDwarf::Server::DwarfServer ());
-    server->Start(serverPort);
+    SocketDwarf::Server::DwarfServerSettings settings;
+    settings.ServerPort = 8080;
+    settings.LibraryProbingPaths.push_back("./");
+    std::unique_ptr<SocketDwarf::Server::DwarfServer> server (new SocketDwarf::Server::DwarfServer (settings));
+    server->Start();
     int thisSocket;
     struct sockaddr_in destination;
 	destination.sin_family = AF_INET;
@@ -110,8 +116,11 @@ void SessionTestFixture::ServerIsRespondingWithWebSocket()
 
 void SessionTestFixture::SampleDwarfIsRespondingThroughWebSocket()
 {
-    std::unique_ptr<SocketDwarf::Server::DwarfServer> server (new SocketDwarf::Server::DwarfServer ());
-    server->Start(serverPort);
+    SocketDwarf::Server::DwarfServerSettings settings;
+    settings.ServerPort = 8080;
+    settings.LibraryProbingPaths.push_back("./");
+    std::unique_ptr<SocketDwarf::Server::DwarfServer> server (new SocketDwarf::Server::DwarfServer (settings));
+    server->Start();
     int thisSocket;
     struct sockaddr_in destination;
 	destination.sin_family = AF_INET;

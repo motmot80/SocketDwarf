@@ -22,6 +22,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include <stdexcept>
 
 #ifdef WIN32
@@ -38,18 +39,16 @@ namespace Helper {
 
     DllExport struct Library {
     public:
-                        Library (std::string const & name)
+                        Library (std::string const & name) 
                         {
-                            libraryHandle = NULL;
-#ifdef WIN32
-                            libraryHandle = ::LoadLibrary((name + std::string(".dll")).c_str());
-#else   
-                            libraryHandle = ::dlopen((std::string("./lib") + name + std::string(".so")).c_str(), RTLD_LAZY);
-#endif
-                            if (libraryHandle == NULL)
-                            {
-                                throw std::runtime_error(name);
-                            }
+                            std::vector<std::string> probingDir;
+                            probingDir.push_back("./");
+                            Load (name, probingDir);
+                        }
+
+                        Library (std::string const & name, std::vector<std::string> const & probingDirectories)
+                        {
+                            Load (name, probingDirectories);
                         }
 
                       ~ Library ()
@@ -66,6 +65,24 @@ namespace Helper {
                             return libraryHandle;
                         }                    
     private:
+        void            Load (std::string const & name, std::vector<std::string> const probingDirectories)
+                        {
+                            libraryHandle = NULL;
+                            for (std::vector<std::string>::const_iterator cit = probingDirectories.begin(); cit != probingDirectories.end (); cit++)
+                            {
+#ifdef WIN32
+                                libraryHandle = ::LoadLibrary((*cit + name + std::string(".dll")).c_str());
+#else   
+                                libraryHandle = ::dlopen((*cit + std::string("lib") + name + std::string(".so")).c_str(), RTLD_LAZY);
+#endif
+                                if (libraryHandle != NULL)
+                                    break;
+                            }
+                            if (libraryHandle == NULL)
+                            {
+                                throw std::runtime_error(name);
+                            }
+                        }
         LIBRARYHANDLE   libraryHandle;                       
     };         
 }

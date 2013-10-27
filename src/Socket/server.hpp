@@ -30,6 +30,7 @@
 #include "library.hpp"
 #include "function.hpp"
 #include "session.hpp"
+#include "serversettings.hpp"
 
 #ifdef WIN32
 #define Export __declspec( dllexport )
@@ -46,9 +47,9 @@ namespace SocketDwarf {
         Export class DwarfServer {
 
         public:
-                                                          DwarfServer           ();
+                                                          DwarfServer           (DwarfServerSettings const & settings);
                                                         ~ DwarfServer           ();
-                    void				                  Start   				(int port);
+                    void				                  Start   				();
                     void				                  Stop                  ();
                     void                                  ProcessDwarfs         ();
 
@@ -63,6 +64,7 @@ namespace SocketDwarf {
                     Session *                             CreateSession         (mg_connection * conn);            
                     Session *                             GetSessionById        (const std::string & sessionId);
                     const Session *                       GetSessionById        (const std::string & sessionId) const;
+                    DwarfServerSettings const             settings;
                     SessionMap                            sessions;                   
                     struct mg_callbacks		              callbacks;
                     struct mg_context *		              ctx;

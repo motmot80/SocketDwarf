@@ -35,6 +35,15 @@ include_directories("../../../../OculusSDK/LibOVR/Include")
 add_library (${projectName} SHARED dwarf.cpp OculusDwarf.js)
 set(LIBRARY_OUTPUT_PATH ../../../build/bin)
 
+#deployment
+add_custom_command( TARGET ${projectName} 
+                    POST_BUILD 
+                    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy
+                    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy/dwarfs
+                    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy/dwarfs/${projectName}
+                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${projectName}.js ${CMAKE_SOURCE_DIR}/deploy/dwarfs/${projectName}/
+                    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${projectName}> ${CMAKE_SOURCE_DIR}/deploy/dwarfs/${projectName}/)
+
 #static library declarations
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	target_link_libraries(${projectName} json ovr udev X11 Xinerama )

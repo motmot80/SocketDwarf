@@ -23,6 +23,9 @@
 #include <string>
 #include <map>
 #include <iostream>   
+#include <fstream>
+#include <string>
+#include <json/json.h>
 #include "server.hpp"
 
 namespace
@@ -37,15 +40,37 @@ namespace
         quit = 1;
     }
 }
+#include <stdio.h>
+#include <direct.h>
+SocketDwarf::Server::DwarfServerSettings LoadJsonSettings(std::string const & pathname)
+{
+    SocketDwarf::Server::DwarfServerSettings settings;    
+    std::ifstream ifs(pathname);
+    if (!ifs.is_open())
+        throw std::runtime_error("settings file not found '" + pathname);
+    std::string data((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()) );
+    Json::Value configRoot;   
+    Json::Reader configReader;
+    if (configReader.parse(data, configRoot)) {
+        settings.ServerPort = configRoot["settings"]["serverPort"].asString();
+        settings.DocumentRoot = configRoot["settings"]["documentRoot"].asString();
+        Json::Value libraryProbingPathValue = configRoot["settings"]["libraryProbingPaths"];
+        for (unsigned int i = 0; i < libraryProbingPathValue.size(); i++)
+            settings.LibraryProbingPaths.push_back(libraryProbingPathValue[i].asString());        
+    }
+    return settings;
+}
 
 int main(int argc, char *argv[]) 
 {
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
-    std::auto_ptr<SocketDwarf::Server::DwarfServer> server (new SocketDwarf::Server::DwarfServer ());
     try {
+        std::string const settingsPathname = argc > 1 ? argv[1] : "./settings.json";
+        SocketDwarf::Server::DwarfServerSettings settings = LoadJsonSettings(settingsPathname);
+        std::auto_ptr<SocketDwarf::Server::DwarfServer> server (new SocketDwarf::Server::DwarfServer (settings));
         std::cout << "SocketDwarf server starting..."  << std::endl;
-        server->Start(8080);
+        server->Start();
         std::cout << "SocketDwarf server started"  << std::endl;
         std::cout << "Press enter to stop server"  << std::endl;
         std::string input;
