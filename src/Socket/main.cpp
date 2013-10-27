@@ -40,8 +40,7 @@ namespace
         quit = 1;
     }
 }
-#include <stdio.h>
-#include <direct.h>
+
 SocketDwarf::Server::DwarfServerSettings LoadJsonSettings(std::string const & pathname)
 {
     SocketDwarf::Server::DwarfServerSettings settings;    
