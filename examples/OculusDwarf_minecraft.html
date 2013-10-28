@@ -249,7 +249,7 @@
 
 		    function onGetInfo(data) {
 		        console.log(data);
-		        
+
 				effect = new THREE.OculusRiftEffect( renderer, 
 						{	
 							// Here is the effect for the Oculus Rift
@@ -277,10 +277,11 @@
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
 
-				//effect.setSize( window.innerWidth, window.innerHeight );
-
+				if (effect != null) {
+					effect.setSize( window.innerWidth, window.innerHeight );
+				}
 				//controls.handleResize();
-
+				
 			}
 
 			function keyPressed (event) {
@@ -321,8 +322,6 @@
 				return ( data[ x + z * worldWidth ] * 0.2 ) | 0;
 
 			}
-
-			//
 
 			function animate() {
 
