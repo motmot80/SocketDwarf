@@ -67,6 +67,8 @@
 			var camera, controls, scene, renderer;
 
 			var mesh;
+			
+			var effect;
 
 			var worldWidth = 128, worldDepth = 128,
 			worldHalfWidth = worldWidth / 2, worldHalfDepth = worldDepth / 2,
@@ -212,11 +214,6 @@
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				renderer.setClearColor(new THREE.Color(0xbfd1e5));
 
-				// Here is the effect for the Oculus Rift
-				// worldScale 100 means that 100 Units == 1m
-				effect = new THREE.OculusRiftEffect( renderer, {worldScale: 100} );
-				effect.setSize( window.innerWidth, window.innerHeight );
-
 				container.innerHTML = "";
 
 				container.appendChild( renderer.domElement );
@@ -235,16 +232,56 @@
 			}
 
 			
+		    function onGetOrientation(data) {
+		        //console.log(data);
+		        camera.quaternion.set(data.x, data.y, data.z, data.w);
+		    }
+
+		    function onDwarfConnected() {
+		        console.log("OculusDwarf connected");
+		        oculusDwarf.getInfo();
+		    }
+
+		    function onDwarfDisconnected() {
+		        console.log("OculusDwarf disconnected. Try reinit...");
+		        oculusDwarf.init();
+		    }
+
+		    function onGetInfo(data) {
+		        console.log(data);
+
+				effect = new THREE.OculusRiftEffect( renderer, 
+						{	
+							// Here is the effect for the Oculus Rift
+							// worldScale 100 means that 100 Units == 1m
+							worldScale: 100,
+							// get HMD SDK data from the OculusDwarf
+							HMD: { 
+								hResolution: data.HResolution,
+								vResolution: data.VResolution,
+								hScreenSize: data.HScreenSize,
+								vScreenSize: data.VScreenSize,
+								interpupillaryDistance: data.InterpupillaryDistance,
+								lensSeparationDistance: data.LensSeparationDistance,
+								eyeToScreenDistance: data.EyeToScreenDistance,
+								distortionK : [data.DistortionK_0, data.DistortionK_1, data.DistortionK_2, data.DistortionK_3],
+								chromaAbParameter: [ 0.996, -0.004, 1.014, 0.0]
+							}
+						});
+				effect.setSize( window.innerWidth, window.innerHeight );
+		    }
+			
 			
 			function onWindowResize() {
 
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
 
-				effect.setSize( window.innerWidth, window.innerHeight );
-
+				if (effect != null) {
+					effect.setSize( window.innerWidth, window.innerHeight );
+				}
 				//controls.handleResize();
-
+				
 			}
 
 			function keyPressed (event) {
@@ -286,25 +323,6 @@
 
 			}
 
-			//
-
-			function onGetOrientation(data) {
-			    camera.quaternion.set(data.x, data.y, data.z, data.w);
-			}
-
-			function onDwarfConnected() {
-			    console.log("OculusDwarf connected");
-			    oculusDwarf.getInfo();
-			}
-
-			function onDwarfDisconnected() {
-			    console.log("OculusDwarf disconnected.");
-			}
-
-			function onGetInfo(data) {
-			    console.log(data);
-			}
-
 			function animate() {
 
 		        if (oculusDwarf.isDwarfConnected) {
@@ -321,7 +339,9 @@
 			function render() {
 
 				//controls.update( clock.getDelta() );
-				effect.render( scene, camera );
+				if (effect != null) {
+					effect.render( scene, camera );
+				}
 
 			}
 

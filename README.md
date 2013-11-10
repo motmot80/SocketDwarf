@@ -1,7 +1,9 @@
 SocketDwarf
 ===========
 
-SocketDwarf++ - A multiplatform HTML 5 peripherals adapter
+SocketDwarf - A multiplatform HTML 5 peripherals adapter
+
+more under: http://socketdwarf.org
 
 ###Project target
 * Enable HTML 5 to support a wide range of peripherals
