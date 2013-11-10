@@ -57,6 +57,7 @@ void SocketDwarf::Server::DwarfServer::Start()
     const char * options [] = { "listening_ports", settings.ServerPort.c_str(), "document_root", settings.DocumentRoot.c_str(), NULL };
     
     Session::SetProbingPaths(settings.LibraryProbingPaths);
+    Session::SetAdminDwarfs(settings.AdminDwarfs);
 
     callbacks.websocket_ready = OnClientConnectedS;
     callbacks.websocket_data = OnClientDataReceivedS;

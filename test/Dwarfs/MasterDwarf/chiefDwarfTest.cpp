@@ -18,30 +18,28 @@
 //  
 
 
-#pragma once
+#include <cppunit/config/SourcePrefix.h>
+#include "../../../src/Socket/library.hpp"
+#include "../../../src/Socket/function.hpp"
+#include "chiefDwarfTest.hpp"
 
-#include <map>
-#include <vector>
-#include <string>
-#include <sstream> 
-#include <memory>
 
-#ifdef WIN32
-#define Export __declspec( dllexport )
-#else 
-#define Export 
-#endif
+CPPUNIT_TEST_SUITE_REGISTRATION(MasterDwarfTestFixture);
 
-namespace SocketDwarf {    
+void MasterDwarfTestFixture::MasterStartable()
+{
+	Helper::Library lib ("SampleDwarf");
+    Helper::Function<const std::string (const std::string &)> echoFunction(lib, "ProcessRequest");
+    const std::string responseData = echoFunction("{\"command\": \"echo\", \"data\": \"hello world\"}");
+    CPPUNIT_ASSERT(responseData == "\n{\n\t\"data\" : \"hello world\"\n}\n");
+}
 
-    namespace Server {
-        
-        Export struct DwarfServerSettings {
-            public:
-                        std::string                 ServerPort;
-                        std::vector<std::string>    LibraryProbingPaths;
-                        std::string                 DocumentRoot;
-                        std::vector<std::string>    AdminDwarfs;
-        };
-    }
+void MasterDwarfTestFixture::setUp()
+{
+
+}
+
+void MasterDwarfTestFixture::tearDown()
+{
+
 }

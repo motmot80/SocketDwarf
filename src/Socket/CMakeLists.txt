@@ -42,8 +42,12 @@ set(EXECUTABLE_OUTPUT_PATH ../../build/bin)
 add_custom_command( TARGET ${projectName}Server
                     POST_BUILD 
                     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy
+                    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy/docroot
+                    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${projectName}Server>/docroot
                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/settings.json $<TARGET_FILE_DIR:${projectName}Server>
                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/settings.json ${CMAKE_SOURCE_DIR}/deploy
+                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/SocketDwarf.js $<TARGET_FILE_DIR:${projectName}Server>/docroot
+                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/SocketDwarf.js ${CMAKE_SOURCE_DIR}/deploy/docroot
                     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${projectName}Server> ${CMAKE_SOURCE_DIR}/deploy)
 
 #static library declarations

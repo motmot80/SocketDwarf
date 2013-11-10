@@ -20,28 +20,18 @@
 
 #pragma once
 
-#include <map>
-#include <vector>
+#include <cppunit/extensions/HelperMacros.h>
 #include <string>
-#include <sstream> 
-#include <memory>
 
-#ifdef WIN32
-#define Export __declspec( dllexport )
-#else 
-#define Export 
-#endif
+class MasterDwarfTestFixture : public CPPUNIT_NS::TestFixture
+{
+  CPPUNIT_TEST_SUITE(MasterDwarfTestFixture );
+  CPPUNIT_TEST(MasterStartable);
+  CPPUNIT_TEST_SUITE_END();
 
-namespace SocketDwarf {    
-
-    namespace Server {
-        
-        Export struct DwarfServerSettings {
-            public:
-                        std::string                 ServerPort;
-                        std::vector<std::string>    LibraryProbingPaths;
-                        std::string                 DocumentRoot;
-                        std::vector<std::string>    AdminDwarfs;
-        };
-    }
-}
+public:
+  void setUp();
+  void tearDown();
+protected:
+  void MasterStartable();
+};

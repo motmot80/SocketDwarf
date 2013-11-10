@@ -20,7 +20,7 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 # Above line indicates to Cmake that minimum version 2.8 is required.
 # As you may have noted all lines beginning with hash symbol are treated as comments by Cmake.
-SET(projectName OculusDwarf)
+SET(projectName MasterDwarf)
 MESSAGE(STATUS "Creating " ${projectName} "...")
 
 cmake_policy(SET CMP0015 NEW)
@@ -28,11 +28,8 @@ cmake_policy(SET CMP0015 NEW)
 link_directories("../../../../jsoncpp/lib")
 include_directories("../../../../jsoncpp/include")
 
-link_directories("../../../../OculusSDK/LibOVR/Lib")
-include_directories("../../../../OculusSDK/LibOVR/Include")
-
 # The following line is very important.
-add_library (${projectName} SHARED dwarf.cpp OculusDwarf.js)
+add_library (${projectName} SHARED dwarf.cpp MasterDwarf.js index.html jquery-1.10.2.min.js)
 set(LIBRARY_OUTPUT_PATH ../../../build/bin)
 
 #deployment
@@ -42,15 +39,18 @@ add_custom_command( TARGET ${projectName}
                     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy/docroot
                     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy/docroot/${projectName}
                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${projectName}.js ${CMAKE_SOURCE_DIR}/deploy/docroot/${projectName}
+                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/index.html ${CMAKE_SOURCE_DIR}/deploy/docroot/${projectName}
+                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/jquery-1.10.2.min.js ${CMAKE_SOURCE_DIR}/deploy/docroot/${projectName}
+                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/logo.png ${CMAKE_SOURCE_DIR}/deploy/docroot/${projectName}
                     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy/dwarfs
-                    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy/dwarfs/${projectName}
+                    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy/dwarfs/${projectName}                    
                     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${projectName}> ${CMAKE_SOURCE_DIR}/deploy/dwarfs/${projectName}/)
 
 #static library declarations
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	target_link_libraries(${projectName} json ovr udev X11 Xinerama )
+	target_link_libraries(${projectName} json)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	target_link_libraries(${projectName} json.lib libovr.lib winmm.lib)
+	target_link_libraries(${projectName} json.lib)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")

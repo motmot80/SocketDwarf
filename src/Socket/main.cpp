@@ -46,7 +46,7 @@ SocketDwarf::Server::DwarfServerSettings LoadJsonSettings(std::string const & pa
     SocketDwarf::Server::DwarfServerSettings settings;    
     std::ifstream ifs(pathname);
     if (!ifs.is_open())
-        throw std::runtime_error("settings file not found '" + pathname);
+        throw std::runtime_error("settings file not found '" + pathname + "'");
     std::string data((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()) );
     Json::Value configRoot;   
     Json::Reader configReader;
@@ -56,6 +56,9 @@ SocketDwarf::Server::DwarfServerSettings LoadJsonSettings(std::string const & pa
         Json::Value libraryProbingPathValue = configRoot["settings"]["libraryProbingPaths"];
         for (unsigned int i = 0; i < libraryProbingPathValue.size(); i++)
             settings.LibraryProbingPaths.push_back(libraryProbingPathValue[i].asString());        
+        Json::Value adminDwarfsValue = configRoot["settings"]["adminDwarfs"];
+        for (unsigned int i = 0; i < adminDwarfsValue.size(); i++)
+            settings.AdminDwarfs.push_back(adminDwarfsValue[i].asString());
     }
     return settings;
 }

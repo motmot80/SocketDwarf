@@ -1,0 +1,58 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Socket Dwarf - A multiplatform HTML 5 peripherals adapter</title>
+<script type="text/javascript" src="../SocketDwarf.js"></script>
+<script type="text/javascript" src="MasterDwarf.js"></script>
+<script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+</head>
+<body>
+    <img height="120" width="120" src="logo.png" alt="SocketDwarfLogo" />
+    <h1>Socket Dwarf - A multiplatform HTML 5 peripherals adapter</h1>
+    <script type="text/javascript">
+        var masterDwarf;
+
+        function init() {
+            masterDwarf = new MasterDwarf();
+            masterDwarf.init();
+            masterDwarf.onDwarfConnected = function () { onDwarfConnected(); }
+            masterDwarf.onGetDwarfStates = onGetDwarfStates;
+        }
+
+        function updateStates() {
+            window.setTimeout(updateStates, 1000);
+            masterDwarf.getDwarfStates();            
+        }
+
+        function onDwarfConnected() {
+            console.log("MasterDwarf connected");
+            updateStates();
+        }
+
+        function onGetDwarfStates(states) {
+            $("#dwarfStates").empty();
+            $("#dwarfStates").append("<ul>");
+            if (states != null && states.data != null && states.data.length > 0) {
+                for (var i = 0; i < states.data.length; i++) {
+                    $("#dwarfStates").append("<li>" + states.data[i].dwarf + ": [" + states.data[i].state + "] " + states.data[i].connectedDeviceName + "</li>");
+                }
+            }
+            else {
+                $("#dwarfStates").append("<li>no dwarf loaded</li>");
+            }
+            $("#dwarfStates").append("</ul>");
+        }
+
+        window.onload = function () {
+            init();
+        }
+
+        window.onclose = function (e) {
+            dwarf.destroy();
+        }
+    </script>
+    <div id="dwarfStates">
+
+    </div>
+</body>
+</html>

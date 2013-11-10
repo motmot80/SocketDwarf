@@ -17,31 +17,27 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  
 
-
 #pragma once
 
-#include <map>
-#include <vector>
-#include <string>
-#include <sstream> 
-#include <memory>
+#include <iostream>     
+#include <sstream>      
+#include <json/json.h>
 
 #ifdef WIN32
-#define Export __declspec( dllexport )
+#include <Windows.h>
+#endif
+#ifdef WIN32
+#define Export extern "C" __declspec( dllexport )
 #else 
-#define Export 
+#define Export extern "C" 
 #endif
 
-namespace SocketDwarf {    
+#include "../../Socket/function.hpp"
+#include "dwarf.hpp"
 
-    namespace Server {
-        
-        Export struct DwarfServerSettings {
-            public:
-                        std::string                 ServerPort;
-                        std::vector<std::string>    LibraryProbingPaths;
-                        std::string                 DocumentRoot;
-                        std::vector<std::string>    AdminDwarfs;
-        };
-    }
-}
+namespace {
+
+#define GETSTATEFUNC Helper::Function<void (::DwarfState &)>
+#define ADMIN_NOTIFY_NEW_DWARF(DWARFNAME,STATEFUNC) Export void NotifyNewDwarf (std::string const & DWARFNAME, Helper::Function<void (::DwarfState &)> STATEFUNC)
+
+};

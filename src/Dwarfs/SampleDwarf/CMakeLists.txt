@@ -37,7 +37,8 @@ add_custom_command( TARGET ${projectName}
                     POST_BUILD 
                     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy
                     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy/docroot
-                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${projectName}.js ${CMAKE_SOURCE_DIR}/deploy/docroot
+                    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy/docroot/${projectName}
+                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${projectName}.js ${CMAKE_SOURCE_DIR}/deploy/docroot/${projectName}
                     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy/dwarfs
                     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy/dwarfs/${projectName}                    
                     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${projectName}> ${CMAKE_SOURCE_DIR}/deploy/dwarfs/${projectName}/)

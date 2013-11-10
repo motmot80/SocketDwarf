@@ -19,11 +19,13 @@
 
 var echoTick = 0;
 
+SampleDwarf.prototype = new SocketDwarf("Sample");
+
 function SampleDwarf() {
-    
+    var that = this;
 }
 
-SocketDwarf.prototype.echo = function (message) {
+SampleDwarf.prototype.echo = function (message) {
     echoTick = (new Date()).getTime();
     console.log("message send '" + message + "'");
     var data = {
@@ -33,12 +35,10 @@ SocketDwarf.prototype.echo = function (message) {
     this.sendMessage(JSON.stringify(data));
 }
 
-SocketDwarf.prototype.onMessage = function (event) {
+SampleDwarf.prototype.onMessage = function (event) {
     var that = this;
     data = JSON.parse(event.data);
     var message = data.data;
     console.log("echo received '" + this.message + "' (" + ((new Date()).getTime() - echoTick) + " msec)");
     this.echo(message);
 }
-
-SampleDwarf.prototype = new SocketDwarf("Sample");

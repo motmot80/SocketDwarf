@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+    <title>MasterDwarf Example</title>
+
+    <script type="text/javascript" src="../src/Socket/SocketDwarf.js"></script>
+    <script type="text/javascript" src="../src/Dwarfs/MasterDwarf/MasterDwarf.js"></script>
+    
+    <style>
+
+      body {
+      	margin: 0;
+      	padding: 20px;
+      }
+      
+
+    </style>
+
+</head>
+<body>
+	<h4>SampleDwarf Example</h4>
+    <script type="text/javascript">
+        
+    var dwarf;
+
+    function init(){
+        dwarf = new MasterDwarf();
+        dwarf.init();
+        dwarf.onGetDwarfStates = onGetDwarfStates;
+    }
+
+    function onGetDwarfStates (states) {
+        console.log(states);
+    }
+
+    window.onload = function () {
+        init();
+    }
+
+    /* Clean up when the site gets unloaded */
+    window.onclose = function (e) {
+        dwarf.destroy();
+    }
+
+    </script>
+    <label>Message:</label><input type="text" id="message" value="test message"/>
+    <input type="button" value="Get dwarf states..." onclick="dwarf.getDwarfStates()" />    
+</body>
+</html>

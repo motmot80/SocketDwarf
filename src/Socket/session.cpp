@@ -23,19 +23,29 @@
 #include <iostream>   
 
 #include "session.hpp"
+#include "../Dwarfs/include/dwarf.hpp"
 
 /** 
     All loaded shared libraries
 */
 SocketDwarf::Server::LibraryMap SocketDwarf::Server::Session::Libraries;
 SocketDwarf::Server::LibraryProbingPathList SocketDwarf::Server::Session::LibraryProbingPaths;
+SocketDwarf::Server::AdminDwarfList SocketDwarf::Server::Session::AdminDwarfs;
 
 /** 
-    Set probing paths for libraries
+    Sets probing paths for libraries
 */
-void SocketDwarf::Server::Session::SetProbingPaths (std::vector<std::string> const & probingPaths)
+void SocketDwarf::Server::Session::SetProbingPaths (LibraryProbingPathList const & probingPaths)
 {
     LibraryProbingPaths = probingPaths;
+}
+
+/** 
+    Sets valid admin dwarfs
+*/
+void SocketDwarf::Server::Session::SetAdminDwarfs (LibraryProbingPathList const & adminDwarfs)
+{
+    AdminDwarfs = adminDwarfs;
 }
 
 /** 
@@ -70,6 +80,12 @@ SocketDwarf::Server::Session::~ Session ()
 void SocketDwarf::Server::Session::Start ()
 {
     const Helper::Library * library = GetDwarfLibraryByName (Protocol);
+    if (library == 0) {
+        library = LoadDwarfLibraryByName(Protocol);
+        if (library != 0) {
+            OnInitializeDwarf (Protocol, *library);
+        }
+    }
     if (library != 0)
     {
         //TODO: Transfer callback func for duplex communication
@@ -152,29 +168,80 @@ int SocketDwarf::Server::Session::OnClientDataReceived (const std::string & data
 
 /** 
     Returns a shared library by its name.
-    Shared library is loaded if unknown.
 */
 const Helper::Library * SocketDwarf::Server::Session::GetDwarfLibraryByName (const std::string & name)
 {
-    const std::string internalName = name + "Dwarf";
     Helper::Library * libraryPtr = 0;
-    LibraryMap::const_iterator cit = Libraries.find(internalName);
+    LibraryMap::const_iterator cit = Libraries.find(name);
     if (cit != Libraries.end())
     {
         return cit->second.get ();
     }
+    return 0;
+}
+
+/** 
+    Loads a shared library by its name. Runtime exception if loaded
+*/
+const Helper::Library * SocketDwarf::Server::Session::LoadDwarfLibraryByName (const std::string & name)
+{
+    const std::string libraryName = name + "Dwarf";
+    if (GetDwarfLibraryByName (name) != 0) {
+        throw std::runtime_error ("library '" + libraryName + "' already loaded"); 
+    }
+    Helper::Library * libraryPtr = 0;
     try {
-        libraryPtr = new Helper::Library(internalName, LibraryProbingPaths);
-        Helper::Function<void ()> initFunc (* libraryPtr, "Init");
-        if (initFunc.IsValid()) {
-            initFunc();
-        }
+        libraryPtr = new Helper::Library(libraryName, LibraryProbingPaths);
     }
     catch (...) {
         return 0;
     }
-    Libraries.insert(Libraries.begin(), std::pair<std::string, std::unique_ptr<Helper::Library>> (internalName, std::unique_ptr<Helper::Library>(libraryPtr)));
+    Libraries.insert(Libraries.begin(), std::pair<std::string, std::unique_ptr<Helper::Library>> (name, std::unique_ptr<Helper::Library>(libraryPtr)));
     return libraryPtr;
+}
+
+/** 
+    Initializes a dwarf and notifies all admin dwarfs
+*/
+void SocketDwarf::Server::Session::OnInitializeDwarf (std::string const & dwarfName, Helper::Library const & dwarfLibrary)
+{
+    Helper::Function<void ()> initFunc (dwarfLibrary, "Init");
+    if (initFunc.IsValid()) {
+        initFunc();
+    }
+    AdminNotifyNewDwarf(dwarfName, dwarfLibrary);    
+}
+
+/** 
+    Notifies all admin dwarfs about the new dwarf
+*/
+void SocketDwarf::Server::Session::AdminNotifyNewDwarf (std::string const & dwarfName, Helper::Library const & dwarfLibrary)
+{
+    Helper::Function<void (::DwarfState &)> dwarfGetStateFunc (dwarfLibrary, "GetState");
+    if (!dwarfGetStateFunc.IsValid())
+    {
+        std::cerr << "Warning: Dwarf'" + dwarfName + "' does not support GetState";
+        return;
+    }
+    for (AdminDwarfList::const_iterator cit = AdminDwarfs.begin(); cit != AdminDwarfs.end(); cit++)
+    {
+        if (* cit != dwarfName) 
+        {
+            const Helper::Library * adminDwarfLibrary = GetDwarfLibraryByName (* cit);
+            if (adminDwarfLibrary == 0) {
+                adminDwarfLibrary = LoadDwarfLibraryByName(* cit);
+            }
+            if (adminDwarfLibrary != 0) {
+                Helper::Function<void(std::string const &, Helper::Function<void (::DwarfState &)>)> notifyNewDwarfFunc (*adminDwarfLibrary, "NotifyNewDwarf");
+                if (notifyNewDwarfFunc.IsValid()) {
+                    notifyNewDwarfFunc(dwarfName, dwarfGetStateFunc);
+                }
+            }
+            else {
+                std::cerr << "Warning: Could not load admin dwarf '" + dwarfName + "'";
+            }
+        }
+    }
 }
 
 

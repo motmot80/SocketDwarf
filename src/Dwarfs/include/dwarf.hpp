@@ -31,3 +31,29 @@
 #else 
 #define Export extern "C" 
 #endif
+
+namespace {
+
+enum EDwarfState {
+    Error = -1,
+    Unknown = 0,
+    Loading = 1,
+    NoDevice = 2,
+    DeviceIdle = 3,
+    DeviceReady = 4,
+    Unloading = 6
+};
+
+struct DwarfState {
+public:
+    EDwarfState State;
+    std::string StateDescription;
+    std::string ConnectedDeviceName;
+};
+
+#define DWARF_INIT() Export void Init ()
+#define DWARF_FREE() Export void Free ()
+#define DWARF_GETSTATE(STATE) Export void GetState (DwarfState & STATE)
+#define DWARF_PROCESSREQUEST(DATA) Export const std::string ProcessRequest (const std::string & DATA)
+
+};

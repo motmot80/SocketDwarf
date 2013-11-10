@@ -17,7 +17,7 @@
     <title>OculusDwarf Example</title>
     <script type="text/javascript" src="../src/Socket/SocketDwarf.js"></script>
     <script type="text/javascript" src="../src/Dwarfs/OculusDwarf/OculusDwarf.js"></script>
-    <script type="text/javascript" src="three.min.js"></script>
+    <script src="js/lib/three.min.js"></script>
     
     <style>
 
@@ -141,7 +141,6 @@
 
     function onDwarfDisconnected() {
         console.log("OculusDwarf disconnected. Try reinit...");
-        oculusDwarf.init();
     }
 
     function onGetInfo(data) {

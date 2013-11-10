@@ -108,7 +108,7 @@ namespace {
 
 };
 
-Export void Init ()
+DWARF_INIT()
 {
     OVR::System::Init();
     pFusionResult = new OVR::SensorFusion();
@@ -119,7 +119,7 @@ Export void Init ()
     }
 }
 
-Export void Free ()
+DWARF_FREE()
 {
     if (pSensor)
     {
@@ -140,7 +140,7 @@ Export void Free ()
     OVR::System::Destroy();
 }
 
-Export const std::string ProcessRequest (const std::string & data)
+DWARF_PROCESSREQUEST(data)
 {
     Json::Value requestRoot;   
     Json::Reader requestReader;
@@ -162,3 +162,20 @@ Export const std::string ProcessRequest (const std::string & data)
     return std::string();
 }
 
+DWARF_GETSTATE(currentState)
+{
+    if (pFusionResult != 0 && pHMD != 0 && pSensor != 0 && !pHMD->IsDisconnected()) {
+        currentState.State = EDwarfState::DeviceReady; 
+        currentState.StateDescription = "Oculus VR connected"; 
+        OVR::DeviceInfo devInfo;
+        pSensor->GetDeviceInfo (&devInfo);
+        currentState.ConnectedDeviceName = std::string(devInfo.Manufacturer) + " " + std::string(devInfo.ProductName) + " (ver " + std::to_string(devInfo.Version) + ")";
+    }
+    else if (pFusionResult != 0) {
+        currentState.State = EDwarfState::NoDevice; 
+        currentState.StateDescription = "No Oculus VR connected"; 
+    }
+    else {
+        currentState.State = EDwarfState::Error; 
+    }
+}

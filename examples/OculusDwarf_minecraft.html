@@ -235,26 +235,6 @@
 			}
 
 			
-		    function onGetOrientation(data) {
-		        console.log(data);
-		        //referenceCube.quaternion.set(data.x, data.y, data.z, data.w);
-		        camera.quaternion.set(data.x, data.y, data.z, data.w);
-		    }
-
-		    function onDwarfConnected() {
-		        console.log("OculusDwarf connected");
-		        oculusDwarf.getInfo();
-		    }
-
-		    function onDwarfDisconnected() {
-		        console.log("OculusDwarf disconnected. Try reinit...");
-		        oculusDwarf.init();
-		    }
-
-		    function onGetInfo(data) {
-		        console.log(data);
-		    }
-			
 			
 			function onWindowResize() {
 
@@ -307,6 +287,23 @@
 			}
 
 			//
+
+			function onGetOrientation(data) {
+			    camera.quaternion.set(data.x, data.y, data.z, data.w);
+			}
+
+			function onDwarfConnected() {
+			    console.log("OculusDwarf connected");
+			    oculusDwarf.getInfo();
+			}
+
+			function onDwarfDisconnected() {
+			    console.log("OculusDwarf disconnected.");
+			}
+
+			function onGetInfo(data) {
+			    console.log(data);
+			}
 
 			function animate() {
 

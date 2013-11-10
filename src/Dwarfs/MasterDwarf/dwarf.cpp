@@ -18,7 +18,16 @@
 //  
 
 #include <string>
-#include "../include/dwarf.hpp"
+#include "../include/adminDwarf.hpp"
+
+namespace {
+    std::map<std::string, GETSTATEFUNC> dwarfGetStateMap;
+};
+
+ADMIN_NOTIFY_NEW_DWARF(dwarfName, dwarfGetStateFunc)
+{
+    dwarfGetStateMap.insert(dwarfGetStateMap.begin(), std::pair<std::string, GETSTATEFUNC>(dwarfName, dwarfGetStateFunc));
+}
 
 DWARF_PROCESSREQUEST(data)
 {
@@ -26,15 +35,26 @@ DWARF_PROCESSREQUEST(data)
     Json::Reader requestReader;
     if (requestReader.parse(data, requestRoot)) {
         std::string command = requestRoot.get("command", std::string()).asString();
-        if (command == "echo")
+        if (command == "GetDwarfStates")
         {
-            std::string data = requestRoot.get("data", std::string()).asString();
             Json::Value responseRoot;
-            responseRoot["data"] = data;
+            responseRoot["command"] = command;
+            responseRoot["data"] = Json::Value(Json::arrayValue);
+            for (std::map<std::string, GETSTATEFUNC>::iterator it = dwarfGetStateMap.begin (); it != dwarfGetStateMap.end(); it++)
+            {
+                DwarfState currentState;
+                it->second(currentState);
+                Json::Value dwarfRoot;
+                dwarfRoot["dwarf"] = it->first;
+                dwarfRoot["state"] = currentState.State;
+                dwarfRoot["connectedDeviceName"] = currentState.ConnectedDeviceName;
+                dwarfRoot["stateDescription"] = currentState.StateDescription;
+                responseRoot["data"].append(dwarfRoot);
+            }
             std::ostringstream output;
             output << responseRoot;
             return output.str();
-        }        
+        }
     }
     return std::string();
 }
@@ -42,6 +62,6 @@ DWARF_PROCESSREQUEST(data)
 DWARF_GETSTATE(currentState)
 {
     currentState.State = EDwarfState::DeviceReady;
-    currentState.ConnectedDeviceName = "no real device";
-    currentState.StateDescription = "ready";    
+    currentState.ConnectedDeviceName = std::string();
+    currentState.StateDescription = "ready";
 }

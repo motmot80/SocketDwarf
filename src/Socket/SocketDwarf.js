@@ -22,6 +22,7 @@ function SocketDwarf(protocol) {
 	var backendURI = "ws://localhost:8080";
 	var websocket;
 	var protocolType = protocol;
+	this.isAutoReconnect = true;
 	this.isDebug = false;
 
 	this.generateUid = function (message) {
@@ -66,6 +67,9 @@ function SocketDwarf(protocol) {
 	            console.log("SocketDwarf >> Disconnected from '" + backendURI + "'");
 	        }
 	        thot.onClose();
+	        if (thot.isAutoReconnect) {
+	            thot.init();
+	        }
 	    }
 	}
 	

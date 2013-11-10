@@ -30,6 +30,8 @@ OculusDwarf.prototype.isDwarfConnected = false;
 
 OculusDwarf.prototype.onDwarfConnected = null;
 
+OculusDwarf.prototype.onDwarfDisconnected = null;
+
 OculusDwarf.prototype.deviceInfo = null;
 
 OculusDwarf.prototype.orientation = null;
@@ -110,9 +112,7 @@ OculusDwarf.prototype.onMessage = function (event) {
     }
     if (data.command != null) {
         if (this.isDebug) {
-            if (this.isDebug) {
-                console.log("OculusDwarf >> response: " + data.command);
-            }
+            console.log("OculusDwarf >> response: " + data.command);
         }
         if (data.data != null) {
             if (data.command == "GetInfo") {
