@@ -1,3 +1,5 @@
+![ScreenShot](https://raw.github.com/motmot80/SocketDwarf/dev/src/Dwarfs/MasterDwarf/logo.png)
+
 SocketDwarf
 ===========
 
