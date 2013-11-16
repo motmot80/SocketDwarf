@@ -22,15 +22,23 @@
     function init(){
         dwarf = new MasterDwarf();
         dwarf.init();
+        dwarf.isDebug = true;
         dwarf.onGetDwarfStates = onGetDwarfStates;
     }
 
     function onGetDwarfStates (states) {
         console.log(states);
     }
+    
+    function updateStates() {
+        window.setTimeout(updateStates, 1000);
+        dwarf.getDwarfStates();
+        if (dwarf.isDebug) console.log("MasterDwarf >> Updating State");
+    }
 
     window.onload = function () {
         init();
+        updateStates();
     }
 
     /* Clean up when the site gets unloaded */
@@ -47,9 +55,11 @@
 
     </script>
 	<h4>MasterDwarf Example</h4>
+    You have multiple ways to implement the MasterDwarf Status page. Here are some examples:
     <ul>
-	    <li>Find Status Information in the Browsers Javascript Console.</li>
+    	<li>Simply open it in a <a href="http://localhost:8080/MasterDwarf" target="_blank">new Browser Tab</a></li>
     	<li>Toggle SocketDwarf Status in popup Window with <a href="javascript:dwarf.toggleStatusWindow();" >this Link</a> or by pressing [SHIFT+ENTER]</li>
+    	<li>This example logs Information in the Browsers Javascript Console.</li>
     </ul>
 </body>
 </html>
