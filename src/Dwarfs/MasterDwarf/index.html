@@ -5,12 +5,14 @@
 
 <link rel="icon" href="logo-16.png" sizes="16x16">
 
+<script type="text/javascript" src="jquery-1.10.2.min.js"></script>
 <script type="text/javascript" src="../SocketDwarf.js"></script>
 <script type="text/javascript" src="MasterDwarf.js"></script>
-<script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+
 <style type="text/css">
 	body {
 		font-family: sans-serif;
+		background: #111111;
 	}
 	#mainWrap {
 		border: solid 1px grey;
@@ -18,6 +20,8 @@
 		margin-left: auto ;
 		margin-right: auto ;
 		border-radius: 15px;
+		background: white;
+		position:relative;
 	}
 	h1 {
 		font-size: 140%;
@@ -26,11 +30,20 @@
 	h2 {
 		font-size: 100%;
 	}
+	
+	#menu {
+		position:absolute;
+		top: 5px;
+		right: 10px;
+	}
+	
 	#logo {
 		float: left;
 	}
 	#header {
 		float: left;
+		position:relative;
+		width: 300px;
 	}
 	.clean {
 		clear: both;
@@ -51,25 +64,37 @@
     <div id="header">
 	    <h1>SocketDwarf</h1>
 	    <h2>Version: Prerelease</h2>
+	    <span id="menu">
+	    	<a id="help" title="get Help at SocketDwarf.org" href="http://socketdwarf.org/howto/enduser/" target="_blank">Help</a>
+	    	<a id="close" title="Close Window [ESC]" href="javascript:window.close();" >[X]</a>
+	    </span>
     </div>
     <hr class="clean" />
     <script type="text/javascript">
         var masterDwarf;
 
+    	/* Was key pressed to toggle Status Window */
+    	$(document).keyup(function(e) {
+  			if (e.keyCode == 27 && window.name == "MasterDwarfStatusPopup" ) { window.close(); }   // esc
+		});
+        
         function init() {
             masterDwarf = new MasterDwarf();
             masterDwarf.init();
+            masterDwarf.isDebug = false;
+            
             masterDwarf.onDwarfConnected = function () { onDwarfConnected(); }
             masterDwarf.onGetDwarfStates = onGetDwarfStates;
         }
 
         function updateStates() {
             window.setTimeout(updateStates, 1000);
-            masterDwarf.getDwarfStates();            
+            masterDwarf.getDwarfStates();
+            if (masterDwarf.isDebug) console.log("MasterDwarf >> Updating State");
         }
 
         function onDwarfConnected() {
-            console.log("MasterDwarf connected");
+            console.log("MasterDwarf >> connected");
             updateStates();
         }
 
@@ -84,7 +109,6 @@
             else {
                 $("#dwarfStates ul").append("<li>no dwarf loaded</li>");
             }
-            $("#dwarfStates").append("</ul>");
         }
 
         window.onload = function () {
@@ -94,6 +118,7 @@
         window.onclose = function (e) {
             dwarf.destroy();
         }
+        if (window.name != "MasterDwarfStatusPopup") $('#close').hide();	
     </script>
     <div id="dwarfStates"></div>
     </div>
