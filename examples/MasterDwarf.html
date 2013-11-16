@@ -4,22 +4,17 @@
 
     <title>MasterDwarf Example</title>
 
+	<script type="text/javascript" src="js/lib/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="../src/Socket/SocketDwarf.js"></script>
     <script type="text/javascript" src="../src/Dwarfs/MasterDwarf/MasterDwarf.js"></script>
-    
     <style>
-
       body {
       	margin: 0;
       	padding: 20px;
       }
-      
-
     </style>
-
 </head>
 <body>
-	<h4>SampleDwarf Example</h4>
     <script type="text/javascript">
         
     var dwarf;
@@ -43,8 +38,18 @@
         dwarf.destroy();
     }
 
+	/* Was key pressed to toggle Status Window */
+    $(document).bind('keypress', function(e){
+    	if( e.which === 13 && e.shiftKey ) { // SHIFT+ENTER 
+			dwarf.toggleStatusWindow();    
+    	}
+	})
+
     </script>
-    <label>Message:</label><input type="text" id="message" value="test message"/>
-    <input type="button" value="Get dwarf states..." onclick="dwarf.getDwarfStates()" />    
+	<h4>MasterDwarf Example</h4>
+    <ul>
+	    <li>Find Status Information in the Browsers Javascript Console.</li>
+    	<li>Toggle SocketDwarf Status in popup Window with <a href="javascript:dwarf.toggleStatusWindow();" >this Link</a> or by pressing [SHIFT+ENTER]</li>
+    </ul>
 </body>
 </html>

@@ -21,6 +21,15 @@ MasterDwarf.prototype = new SocketDwarf("Master");
 
 function MasterDwarf() {
     var that = this;
+    
+    this.toggleStatusWindow = function () {
+    	if ( typeof statusWindow == 'undefined' || statusWindow.closed ) {
+    		statusWindow = window.open('http://localhost:8080/MasterDwarf','MasterDwarfStatusPopup','height=250,width=450,status=no,toolbar=no,menubar=no,location=no');
+      	 } else {
+      		 statusWindow.close();
+      		 delete statusWindow;
+      	 }
+    }
 }
 
 MasterDwarf.prototype.getDwarfStates = function (message) {
@@ -61,6 +70,7 @@ MasterDwarf.prototype.onClose = function (event) {
         this.onDwarfDisconnected();
     }
 }
+
 
 MasterDwarf.prototype.onMessage = function (event) {
     var that = this;
