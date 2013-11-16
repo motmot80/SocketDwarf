@@ -1,14 +1,58 @@
 ﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title>Socket Dwarf - A multiplatform HTML 5 peripherals adapter</title>
+<title>Status SocketDwarf 0.0.prerelease</title>
+
+<link rel="icon" href="logo-16.png" sizes="16x16">
+
 <script type="text/javascript" src="../SocketDwarf.js"></script>
 <script type="text/javascript" src="MasterDwarf.js"></script>
 <script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+<style type="text/css">
+	body {
+		font-family: sans-serif;
+	}
+	#mainWrap {
+		border: solid 1px grey;
+		width: 420px;
+		margin-left: auto ;
+		margin-right: auto ;
+		border-radius: 15px;
+	}
+	h1 {
+		font-size: 140%;
+		padding: 20px 0 0 0;
+	}
+	h2 {
+		font-size: 100%;
+	}
+	#logo {
+		float: left;
+	}
+	#header {
+		float: left;
+	}
+	.clean {
+		clear: both;
+	}
+	hr {
+		border: none;
+		border-top:solid grey 1px;height:1px;
+	}
+	
+	#dwarfStates ul {
+		margin: 0 0 0 10px;
+	}
+</style>
 </head>
 <body>
-    <img height="120" width="120" src="logo.png" alt="SocketDwarfLogo" />
-    <h1>Socket Dwarf - A multiplatform HTML 5 peripherals adapter</h1>
+	<div id="mainWrap">
+    <img height="120" width="120" src="logo.png" id="logo" alt="SocketDwarfLogo" />
+    <div id="header">
+	    <h1>SocketDwarf</h1>
+	    <h2>Version: Prerelease</h2>
+    </div>
+    <hr class="clean" />
     <script type="text/javascript">
         var masterDwarf;
 
@@ -34,11 +78,11 @@
             $("#dwarfStates").append("<ul>");
             if (states != null && states.data != null && states.data.length > 0) {
                 for (var i = 0; i < states.data.length; i++) {
-                    $("#dwarfStates").append("<li>" + states.data[i].dwarf + ": [" + states.data[i].state + "] " + states.data[i].connectedDeviceName + "</li>");
+                    $("#dwarfStates ul").append("<li>" + states.data[i].dwarf + ": [" + states.data[i].state + "] " + states.data[i].connectedDeviceName + "</li>");
                 }
             }
             else {
-                $("#dwarfStates").append("<li>no dwarf loaded</li>");
+                $("#dwarfStates ul").append("<li>no dwarf loaded</li>");
             }
             $("#dwarfStates").append("</ul>");
         }
@@ -51,8 +95,7 @@
             dwarf.destroy();
         }
     </script>
-    <div id="dwarfStates">
-
+    <div id="dwarfStates"></div>
     </div>
 </body>
 </html>

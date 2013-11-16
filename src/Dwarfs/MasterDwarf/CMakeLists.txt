@@ -42,6 +42,7 @@ add_custom_command( TARGET ${projectName}
                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/index.html ${CMAKE_SOURCE_DIR}/deploy/docroot/${projectName}
                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/jquery-1.10.2.min.js ${CMAKE_SOURCE_DIR}/deploy/docroot/${projectName}
                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/logo.png ${CMAKE_SOURCE_DIR}/deploy/docroot/${projectName}
+                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/logo-16.png ${CMAKE_SOURCE_DIR}/deploy/docroot/${projectName}
                     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy/dwarfs
                     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/deploy/dwarfs/${projectName}                    
                     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${projectName}> ${CMAKE_SOURCE_DIR}/deploy/dwarfs/${projectName}/)
