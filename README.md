@@ -1,11 +1,11 @@
-![ScreenShot](https://raw.github.com/motmot80/SocketDwarf/dev/src/Dwarfs/MasterDwarf/logo.png)
-
 SocketDwarf
 ===========
 
 SocketDwarf - A multiplatform HTML 5 peripherals adapter
 
 more under: http://socketdwarf.org
+
+![ScreenShot](https://raw.github.com/motmot80/SocketDwarf/dev/src/Dwarfs/MasterDwarf/logo.png)
 
 ###Project target
 * Enable HTML 5 to support a wide range of peripherals
