@@ -18,30 +18,31 @@
 #  
 
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+# Above line indicates to Cmake that minimum version 2.8 is required.
+# As you may have noted all lines beginning with hash symbol are treated as comments by Cmake.
+SET(projectName SixenseDwarf)
+MESSAGE(STATUS "Creating " ${projectName} "...")
+
+# The following line is very important.
+
+# include dirs
+include_directories("../../../../cppunit/include")
+
+# static library directories
 cmake_policy(SET CMP0015 NEW)
+link_directories("../../../../cppunit/lib")
 
-MESSAGE(STATUS "SocketDwarf++ - CMake")
-MESSAGE(STATUS "Platform: " ${CMAKE_SYSTEM_NAME} )
-MESSAGE(STATUS "Dependency: JSONCPP-0.6.0")
-MESSAGE(STATUS "Dependency: cppunit-1.12")
-MESSAGE(STATUS "Dependency: Oculus SDK")
-MESSAGE(STATUS "Dependency: Sixense SDK")
+# preprocessor definitions
 
+add_executable(${projectName}Test main.cpp sixenseDwarfTest.cpp sixenseDwarfTest.hpp )
+set(EXECUTABLE_OUTPUT_PATH ../../../build/bin)
+
+#static library declarations
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	MESSAGE(STATUS "Adding C++11 support")
-	add_definitions(-D__GXX_EXPERMINETAL_CXX0X__=1)
-	list( APPEND CMAKE_CXX_FLAGS " -std=c++0x -g -ftest-coverage -fprofile-arcs")
-	MESSAGE(STATUS "CMAKE_CXX_FLAGS:           " ${CMAKE_CXX_FLAGS})
+	target_link_libraries(${projectName}Test cppunit pthread dl)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+	target_link_libraries(${projectName}Test cppunitd)
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
-add_subdirectory (src/Socket) 
-add_subdirectory (test/Socket) 
-add_subdirectory (src/Dwarfs/MasterDwarf) 
-add_subdirectory (test/Dwarfs/MasterDwarf)
-add_subdirectory (src/Dwarfs/SampleDwarf) 
-add_subdirectory (test/Dwarfs/SampleDwarf) 
-add_subdirectory (src/Dwarfs/OculusDwarf) 
-add_subdirectory (test/Dwarfs/OculusDwarf)
-add_subdirectory (src/Dwarfs/SixenseDwarf) 
-add_subdirectory (test/Dwarfs/SixenseDwarf)

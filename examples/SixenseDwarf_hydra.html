@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+
+<!--
+// From: https://github.com/Instrument/oculus-bridge
+// 
+// Licensed by The MIT License (MIT)
+// Copyright (c) 2013 benpurdy
+// 
+-->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8"> 
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>SixenseDwarf Hydra Example</title>
+    <script type="text/javascript" src="../src/Socket/SocketDwarf.js"></script>
+    <script type="text/javascript" src="../src/Dwarfs/SixenseDwarf/SixenseDwarf.js"></script>
+    <script src="js/lib/three.min.js"></script>
+    
+    <style>
+
+      #stats{
+        position:absolute;
+        top:20px;
+        left:20px;
+      }
+
+      #stats DIV{
+        margin-bottom:5px;
+      }
+
+      #stats DIV LABEL{
+        display:inline-block;
+        width:200px;
+      }
+      body {
+      	margin: 0;
+      	padding: 0;
+      }
+      
+
+    </style>
+
+</head>
+<body>
+    <div id="stats"></div>
+    <div id="viewport"></div>
+
+    <script type="text/javascript">
+    var renderer, camera, scene, element;
+    var point;
+    var aspectRatio, windowHalf;
+
+    var referenceCube1;
+    var referenceCube2;
+    var sixenseDwarf;
+
+    function initScene() {
+      clock = new THREE.Clock();
+      mouse = new THREE.Vector2(0, 0);
+
+      windowHalf = new THREE.Vector2(window.innerWidth / 2 , window.innerHeight / 2 );
+      aspectRatio = window.innerWidth / window.innerHeight;
+      
+      scene = new THREE.Scene();  
+
+      camera = new THREE.PerspectiveCamera(45, aspectRatio, 1, 10000);
+      camera.useQuaternion = true;
+
+      camera.position.set(0, 100, 100);
+      camera.lookAt(scene.position);
+
+      // Initialize the renderer
+      renderer = new THREE.WebGLRenderer({antialias:true});
+      renderer.setClearColor(0x161616);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      element = document.getElementById('viewport');
+      element.appendChild(renderer.domElement);
+    }
+
+
+    function initLights(){
+      point = new THREE.DirectionalLight( 0xffffff, 1, 0, Math.PI, 1 );
+      point.position.set( -250, 250, 150 );
+      
+      scene.add(point);
+    }
+
+
+    function initGeometry(){
+      var floorMaterial = new THREE.MeshBasicMaterial( { color:0x515151, wireframe:true, transparent:true, opacity:0.5 } );
+      var floorGeometry = new THREE.PlaneGeometry(200, 200, 10, 10);
+      var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+      floor.rotation.x = -Math.PI / 2;
+
+      scene.add(floor);
+
+
+      var material1 = new THREE.MeshLambertMaterial({ color: 0xFFC000, emissive: 0xFFC000 });
+      var material2 = new THREE.MeshLambertMaterial({ color: 0xFF0000, emissive: 0xFF0000 });
+      referenceCube1 = new THREE.Mesh(new THREE.CubeGeometry(5, 5, 20), material1);
+      referenceCube2 = new THREE.Mesh(new THREE.CubeGeometry(5, 5, 20), material2);
+
+      scene.add(referenceCube1);
+      scene.add(referenceCube2);
+    }
+
+
+    function onResize() {
+      windowHalf = new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2);
+      aspectRatio = window.innerWidth / window.innerHeight;
+     
+      camera.aspect = aspectRatio;
+      camera.updateProjectionMatrix();
+     
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function animate() {
+        if (sixenseDwarf.isDwarfConnected) {
+            sixenseDwarf.getAllNewestData();
+        }
+        requestAnimationFrame(animate);
+        render();
+    }
+
+
+    function render() { 
+      renderer.render(scene, camera);
+    }
+
+    function setQuaternionByController(controller, object) {
+        var qx = controller.rot_quat[0];
+        var qy = controller.rot_quat[1];
+        var qz = controller.rot_quat[2];
+        var qw = controller.rot_quat[3];
+        object.quaternion.set(qx, qy, qz, qw);
+    }
+
+    function setPositionByController(controller, object) {
+        var px = controller.pos[0] * 0.1;
+        var py = controller.pos[1] * 0.1;
+        var pz = controller.pos[2] * 0.1;
+        object.position.set(px, py, pz);
+    }
+
+    function onGetAllNewestData(data) {
+        console.log(data);
+        if (data != null && data.bases != null && data.bases[1] != null && data.bases[1].controllers != null) {
+            if (data.bases[1].controllers[0] != null) {
+                setQuaternionByController(data.bases[1].controllers[0], referenceCube1);
+                setPositionByController(data.bases[1].controllers[0], referenceCube1);
+            }
+            if (data.bases[1].controllers[1] != null) {
+                setQuaternionByController(data.bases[1].controllers[1], referenceCube2);
+                setPositionByController(data.bases[1].controllers[1], referenceCube2);
+            }
+        }
+    }
+
+    function onDwarfConnected() {
+        console.log("SixenseDwarf connected");
+    }
+
+    function onDwarfDisconnected() {
+        console.log("SixenseDwarf disconnected. Try reinit...");
+    }
+
+    function init(){
+
+    	window.addEventListener('resize', onResize, false);
+
+    	initScene();
+    	initGeometry();
+    	initLights();
+
+    	sixenseDwarf = new SixenseDwarf();
+    	sixenseDwarf.onDwarfConnected = function () { onDwarfConnected(); }
+    	sixenseDwarf.onDwarfDisconnected = function () { onDwarfDisconnected(); }
+    	sixenseDwarf.onGetAllNewestData = function (data) { onGetAllNewestData(data); }
+    	sixenseDwarf.init();
+    	
+    }
+
+
+    window.onload = function() {
+      init();
+      animate();
+    }
+    
+    </script>
+	
+</body>
+</html>

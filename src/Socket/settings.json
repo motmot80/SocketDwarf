@@ -2,7 +2,7 @@
     "settings": {
         "serverPort": "8080",
         "documentRoot": "./docroot",
-		"libraryProbingPaths": [ "./", "./dwarfs/OculusDwarf/", "./dwarfs/SampleDwarf/", "./dwarfs/MasterDwarf/" ],
+		"libraryProbingPaths": [ "./", "./dwarfs/OculusDwarf/", "./dwarfs/SampleDwarf/", "./dwarfs/MasterDwarf/", "./dwarfs/SixenseDwarf/" ],
         "adminDwarfs": [ "Master" ]
     }
 }

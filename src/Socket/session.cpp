@@ -108,9 +108,9 @@ void SocketDwarf::Server::Session::Stop ()
     const Helper::Library * library = GetDwarfLibraryByName (Protocol);
     if (library != 0)
     {
-        Helper::Function<void (const std::string &)> stopFunc (* library, "Stop");
-        if (stopFunc.IsValid()) {
-            stopFunc(GetSessionId());
+        Helper::Function<void ()> freeFunc (* library, "Free");
+        if (freeFunc.IsValid()) {
+            freeFunc();
         }
     }
     else {
