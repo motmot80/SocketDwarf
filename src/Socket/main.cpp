@@ -26,6 +26,7 @@
 #include <fstream>
 #include <string>
 #include <json/json.h>
+#include <clocale>
 #include "server.hpp"
 
 namespace
@@ -65,6 +66,7 @@ SocketDwarf::Server::DwarfServerSettings LoadJsonSettings(std::string const & pa
 
 int main(int argc, char *argv[]) 
 {
+    std::setlocale(LC_ALL, "en_US.UTF-8");
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
     try {
